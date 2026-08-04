@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+.vite
+
+# Local editor / tooling state
+.claude/settings.local.json
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# The served copy lives in public/Shravan-Dige-CV.pdf — this is the source file
+# it was made from, and it carries a phone number, so it stays out of the repo.
+Shravan_CV*.pdf
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Env
+*.local
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
