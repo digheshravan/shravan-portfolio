@@ -8,6 +8,9 @@ dist-ssr
 
 # Local editor / tooling state
 .claude/settings.local.json
+# Codebase-memory index artifact. The graph is rebuilt on demand; the
+# architectural reasoning lives in docs/adr, which is the part worth versioning.
+.codebase-memory/
 .vscode/*
 !.vscode/extensions.json
 .idea
