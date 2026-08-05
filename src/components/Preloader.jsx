@@ -23,13 +23,36 @@ export function Preloader({ onComplete }) {
     const reduced = prefersReducedMotion()
     const counterObj = { v: 0 }
 
+    // The whole site sits behind this overlay, so finishing must not depend on
+    // the animation actually running. GSAP is driven by requestAnimationFrame,
+    // which a browser throttles to a near halt in a background tab and on some
+    // low-power devices — and if the timeline never reaches its last frame, the
+    // visitor is left staring at a loading screen with scrolling disabled.
+    //
+    // `finish` is therefore idempotent and can be called from anywhere: the
+    // timeline's own completion, a wall-clock watchdog, or the moment the tab
+    // becomes visible again after being throttled.
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      document.documentElement.classList.remove('is-loading')
+      if (root.current) root.current.style.display = 'none'
+      onComplete?.()
+    }
+
+    // setTimeout keeps running when rAF does not, which is exactly why the
+    // escape hatch uses it rather than another animation callback.
+    const watchdog = setTimeout(finish, reduced ? 200 : 6000)
+
+    // Coming back to a throttled tab: don't make them wait out the watchdog.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && performance.now() > 6000) finish()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        onComplete: () => {
-          document.documentElement.classList.remove('is-loading')
-          onComplete?.()
-        },
-      })
+      const tl = gsap.timeline({ onComplete: finish })
 
       // `el` is the context root, so it can't be reached by a descendant
       // selector — every reference to the shell itself has to go through the ref.
@@ -75,7 +98,11 @@ export function Preloader({ onComplete }) {
         .set(el, { display: 'none' })
     }, el)
 
-    return () => ctx.revert()
+    return () => {
+      clearTimeout(watchdog)
+      document.removeEventListener('visibilitychange', onVisible)
+      ctx.revert()
+    }
   }, [onComplete])
 
   return (
