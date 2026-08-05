@@ -31,11 +31,15 @@ export function useSmoothScroll(enabled = true) {
       return () => window.removeEventListener('scroll', onScroll)
     }
 
+    // `lerp` rather than `duration` + `easing`: a duration-based tween restarts
+    // on every wheel tick, so a run of quick ticks keeps interrupting itself and
+    // the motion stutters. Lerp eases toward a moving target continuously, which
+    // is what makes a long scroll feel like one gesture instead of many. Lower
+    // is heavier — 0.085 glides without feeling detached from the wheel.
     const lenis = new Lenis({
-      duration: 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.085,
       smoothWheel: true,
-      touchMultiplier: 1.6,
+      touchMultiplier: 1.5,
       wheelMultiplier: 1,
     })
     lenisInstance = lenis

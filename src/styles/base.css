@@ -47,6 +47,10 @@
   --z-nav: 50;
   --z-menu: 55;
   --z-grain: 60;
+  /* Above the nav and grain, below the loader and cursor. Only meaningful
+     because the modal is portalled to <body>; inside .main (z-index 2) no
+     value here could lift it above the nav. */
+  --z-modal: 80;
   --z-loader: 90;
   --z-cursor: 100;
 }

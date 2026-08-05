@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { gsap } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
 import { getLenis } from '../hooks/useSmoothScroll'
@@ -99,7 +100,11 @@ export function ProjectModal({ project, origin, onClose }) {
 
   if (!project) return null
 
-  return (
+  // Portalled to <body> deliberately. The modal is authored inside the Work
+  // section, which lives in .main — and .main sets z-index: 2, creating a
+  // stacking context. Nested there, no z-index can raise the modal above the
+  // nav (z-index 50), so the nav sat over the close button and ate its clicks.
+  return createPortal(
     <div
       className="pmodal"
       ref={root}
@@ -199,6 +204,7 @@ export function ProjectModal({ project, origin, onClose }) {
           </footer>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
