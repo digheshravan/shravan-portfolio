@@ -15,7 +15,7 @@ export function Work() {
   const [origin, setOrigin] = useState(null)
 
   const openProject = useCallback((project, e) => {
-    // Keyboard activation (Enter/Space on a focused orb) reports clientX/Y as 0,
+    // Keyboard activation (Enter/Space on a focused card) reports clientX/Y as 0,
     // which would bloom the reveal from the top-left corner of the screen
     // instead of the thing that was activated. Fall back to the button's centre.
     const rect = e.currentTarget.getBoundingClientRect()
@@ -50,8 +50,23 @@ export function Work() {
           const viewEl = viewport.current
           if (!trackEl || !viewEl) return
 
-          // Recomputed on every refresh so resizes and font swaps stay correct.
-          const distance = () => Math.max(0, trackEl.scrollWidth - window.innerWidth)
+          // One "screen" is documentElement.clientWidth: it excludes the
+          // scrollbar (unlike 100vw) and it does not shift while the pin is
+          // being applied (unlike the viewport element's own clientWidth,
+          // which is measured before pinning and lands ~10px out).
+          const screenW = () => document.documentElement.clientWidth
+
+          const setSlot = () => {
+            trackEl.style.setProperty('--slot', screenW() + 'px')
+          }
+          setSlot()
+
+          // offsetWidth, not scrollWidth. scrollWidth includes the overflow
+          // created by this section's own rotateY/translateZ transforms, so
+          // measuring it makes the travel distance depend on the animation it
+          // is supposed to be driving — the rail then overshoots and the last
+          // card never lands centred.
+          const distance = () => Math.max(0, trackEl.offsetWidth - screenW())
 
           const scrollTween = gsap.to(trackEl, {
             x: () => -distance(),
@@ -64,70 +79,62 @@ export function Work() {
               scrub: 0.8,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              onRefreshInit: setSlot,
             },
           })
 
-          // Each orb blooms open as it crosses the middle of the screen. The
-          // clip-path circle is the transition the whole section is built
-          // around — the artwork arrives by expanding, not by sliding in.
-          gsap.utils.toArray('.orb').forEach((orb) => {
-            const disc = orb.querySelector('.orb__disc')
-            const shot = orb.querySelector('.orb__shot')
-            const copy = orb.querySelector('.orb__copy')
+          // Each card is animated across its ENTIRE time on screen — from the
+          // moment its left edge enters at the far right, to the moment its
+          // right edge leaves at the far left. A single fromTo would run out
+          // partway and leave the card frozen for the rest of its travel, so
+          // this is a two-half timeline that peaks dead centre: it swings in,
+          // settles square to the viewer, then swings back out symmetrically.
+          gsap.utils.toArray('.pcard').forEach((card) => {
+            const shot = card.querySelector('.pcard__shot')
+            const body = card.querySelector('.pcard__body')
 
-            const bloom = {
-              trigger: orb,
+            const travel = {
+              trigger: card,
               containerAnimation: scrollTween,
-              start: 'left 92%',
-              end: 'center 58%',
-              scrub: true,
+              start: 'left right',
+              end: 'right left',
+              scrub: 0.6,
             }
 
-            // Only the screenshot is clipped. Putting the circle on the disc
-            // instead would cut off the caption ring and the glow, which live
-            // outside the artwork's edge.
-            gsap.fromTo(
-              shot,
-              { clipPath: 'circle(28% at 50% 50%)' },
-              { clipPath: 'circle(50% at 50% 50%)', ease: 'none', scrollTrigger: bloom }
-            )
+            gsap
+              .timeline({ scrollTrigger: travel })
+              .fromTo(
+                card,
+                { scale: 0.86, opacity: 0.55, rotateY: 12, z: -220 },
+                { scale: 1, opacity: 1, rotateY: 0, z: 0, ease: 'power2.out', duration: 0.5 }
+              )
+              .to(card, {
+                scale: 0.86,
+                opacity: 0.55,
+                rotateY: -12,
+                z: -220,
+                ease: 'power2.in',
+                duration: 0.5,
+              })
 
-            gsap.fromTo(
-              disc,
-              { scale: 0.74, rotate: -8 },
-              { scale: 1, rotate: 0, ease: 'none', scrollTrigger: bloom }
-            )
-
-            gsap.fromTo(
-              copy,
-              { y: 42, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: orb,
-                  containerAnimation: scrollTween,
-                  start: 'left 80%',
-                  end: 'center 62%',
-                  scrub: true,
-                },
-              }
-            )
-
-            // The ring counter-rotates against travel, which is what sells the
-            // orbs as objects passing by rather than images on a conveyor.
-            gsap.to(orb.querySelector('.orb__ring'), {
-              rotate: 190,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: orb,
-                containerAnimation: scrollTween,
-                start: 'left right',
-                end: 'right left',
-                scrub: true,
-              },
-            })
+            // The screenshot drifts against the card and the copy drifts with
+            // it — a small depth cue that makes the pass feel three-dimensional
+            // rather than like a flat slide. The closing panel has no
+            // screenshot, hence the guard.
+            if (shot) {
+              gsap.fromTo(
+                shot,
+                { xPercent: 14 },
+                { xPercent: -14, ease: 'none', scrollTrigger: travel }
+              )
+            }
+            if (body) {
+              gsap.fromTo(
+                body,
+                { xPercent: -7 },
+                { xPercent: 7, ease: 'none', scrollTrigger: travel }
+              )
+            }
           })
 
           return () => scrollTween.scrollTrigger?.kill()
@@ -140,16 +147,16 @@ export function Work() {
         { stacked: '(max-width: 980px), (prefers-reduced-motion: reduce)' },
         () => {
           if (prefersReducedMotion()) return
-          gsap.utils.toArray('.orb').forEach((orb) => {
+          gsap.utils.toArray('.pcard').forEach((card) => {
             gsap.fromTo(
-              orb,
+              card,
               { y: 56, opacity: 0 },
               {
                 y: 0,
                 opacity: 1,
                 duration: 1.1,
                 ease: 'out-expo',
-                scrollTrigger: { trigger: orb, start: 'top 86%', once: true },
+                scrollTrigger: { trigger: card, start: 'top 86%', once: true },
               }
             )
           })
@@ -177,56 +184,60 @@ export function Work() {
       <div className="work__viewport" ref={viewport}>
         <div className="work__track" ref={track}>
           {PROJECTS.map((project) => (
-            <article className="orb" key={project.id}>
-              <button
-                className="orb__disc"
-                onClick={(e) => openProject(project, e)}
-                aria-label={`Open details for ${project.title}`}
-                data-cursor-label="Open"
-              >
-                <span className="orb__ring" aria-hidden="true">
-                  <svg viewBox="0 0 200 200">
-                    <defs>
-                      <path
-                        id={`ring-${project.slug}`}
-                        d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"
-                        fill="none"
-                      />
-                    </defs>
-                    <text>
-                      <textPath href={`#ring-${project.slug}`} startOffset="0%">
-                        {`${project.title} — ${project.year} — view case — `}
-                      </textPath>
-                    </text>
-                  </svg>
-                </span>
+            <article className="pcard" key={project.id}>
+              {/* .pcard is the full-viewport slot; .pcard__frame is the visible
+                  rectangle. Keeping them separate means the swing pivots around
+                  the centre of the screen rather than the edge of the card. */}
+              <div className="pcard__frame">
+                <div className="pcard__shot">
+                  <div className="pcard__shotInner">
+                    {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
+                  </div>
+                  <span className="pcard__glow" aria-hidden="true" />
+                </div>
 
-                <span className="orb__shot">
-                  {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
-                </span>
+                <div className="pcard__body">
+                  <p className="pcard__meta mono">
+                    <span>{project.id}</span>
+                    <i />
+                    <span>{project.year}</span>
+                  </p>
 
-                <span className="orb__glow" aria-hidden="true" />
-                <span className="orb__index mono" aria-hidden="true">
-                  {project.id}
-                </span>
-              </button>
+                  <h3 className="pcard__title">{project.title}</h3>
+                  <p className="pcard__kind mono">{project.kind}</p>
+                  <p className="pcard__blurb">{project.summary}</p>
 
-              <div className="orb__copy">
-                <h3 className="orb__title">{project.title}</h3>
-                <p className="orb__kind mono">{project.kind}</p>
-                <p className="orb__blurb">{project.summary}</p>
-                <span className="orb__hint mono" aria-hidden="true">
-                  Click to explore →
-                </span>
+                  <div className="pcard__stack">
+                    {project.stack.map((s) => (
+                      <span className="chip" key={s}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+
+                  <span className="pcard__hint mono" aria-hidden="true">
+                    Click to explore →
+                  </span>
+                </div>
+
+                {/* A full-card hit area rather than a wrapping <button>: a button
+                    may only contain phrasing content, and this card has headings. */}
+                <button
+                  className="pcard__hit"
+                  onClick={(e) => openProject(project, e)}
+                  aria-label={`Open details for ${project.title}`}
+                  data-cursor-label="Open"
+                />
               </div>
             </article>
           ))}
 
           {/* Closing panel so the rail ends on an invitation, not a hard stop. */}
-          <article className="orb orb--end">
-            <div className="orb__copy orb__copy--end">
-              <h3 className="orb__title">More on GitHub</h3>
-              <p className="orb__blurb">
+          <article className="pcard pcard--end">
+            <div className="pcard__frame pcard__frame--end">
+              <div className="pcard__body pcard__body--end">
+              <h3 className="pcard__title">More on GitHub</h3>
+              <p className="pcard__blurb">
                 Attendance trackers, course work and whatever I'm building this week — the
                 repositories are all public.
               </p>
@@ -253,6 +264,7 @@ export function Work() {
                   </span>
                 </a>
               </Magnetic>
+              </div>
             </div>
           </article>
         </div>
