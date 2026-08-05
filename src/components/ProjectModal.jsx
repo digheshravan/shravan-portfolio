@@ -109,7 +109,11 @@ export function ProjectModal({ project, origin, onClose }) {
     >
       <button className="pmodal__scrim" onClick={onClose} aria-label="Close details" tabIndex={-1} />
 
-      <div className="pmodal__panel" ref={panel}>
+      {/* Lenis swallows wheel and touch events at the window level, so a nested
+          scroll container gets nothing — even while Lenis is stopped. This
+          attribute is how Lenis is told to leave a subtree to native scrolling;
+          without it the detail panel simply cannot be scrolled. */}
+      <div className="pmodal__panel" ref={panel} data-lenis-prevent>
         <button className="pmodal__close" onClick={onClose} ref={closeBtn} aria-label="Close">
           <span />
           <span />
