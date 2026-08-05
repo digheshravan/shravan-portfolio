@@ -483,192 +483,441 @@
 }
 
 /* --------------------------------------------------------------------------
-   Work
+   Work — a horizontal rail of circular project orbs
    -------------------------------------------------------------------------- */
 
-.work__list {
-  display: grid;
-  gap: clamp(6rem, 16vw, 12rem);
-}
-
-.project {
+.work__viewport {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  display: flex;
   align-items: center;
-  gap: clamp(2rem, 6vw, 6rem);
+  overflow: hidden;
+  margin-top: clamp(2.5rem, 6vw, 5rem);
+  /* Bleed past the section's own padding so the rail spans the full screen. */
+  margin-inline: calc(var(--gutter) * -1);
 }
 
-.project--right .project__stage {
-  order: 2;
+.work__track {
+  display: flex;
+  align-items: center;
+  gap: clamp(3rem, 9vw, 10rem);
+  padding-inline: max(var(--gutter), 10vw);
+  will-change: transform;
 }
 
-.project__bigNum {
+.orb {
+  flex: 0 0 auto;
+  /* Wide enough that roughly one and a half orbs occupy the screen — the rail
+     should feel like travelling past objects, not scanning a contact sheet. */
+  width: min(80vw, 600px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+/* ---- The disc ---- */
+
+.orb__disc {
+  position: relative;
+  width: min(56vh, 470px);
+  height: min(56vh, 470px);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 32% 24%, rgba(108, 92, 255, 0.24), rgba(8, 8, 10, 0.92) 64%);
+  border: 1px solid var(--line);
+  will-change: transform;
+  transition: border-color 0.5s var(--e-out), box-shadow 0.5s var(--e-out);
+}
+
+.orb__disc:hover {
+  border-color: rgba(53, 224, 255, 0.4);
+  box-shadow: 0 0 0 1px rgba(53, 224, 255, 0.12), 0 30px 90px -30px rgba(108, 92, 255, 0.55);
+}
+
+/* The screenshot is the only thing clipped, so the ring and glow can sit
+   outside the circle while the artwork still blooms open on scroll. */
+.orb__shot {
   position: absolute;
-  top: -0.35em;
-  right: -0.05em;
-  z-index: -1;
-  font-family: var(--f-display);
-  font-size: clamp(9rem, 26vw, 26rem);
-  font-weight: 800;
-  font-variation-settings: 'wdth' 70;
-  line-height: 0.7;
-  letter-spacing: -0.06em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(242, 239, 233, 0.07);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  will-change: clip-path, transform;
+}
+
+.orb__shot > * {
+  transform: scale(0.52);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.orb__glow {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(53, 224, 255, 0.2), transparent 68%);
+  filter: blur(28px);
+  opacity: 0;
+  transition: opacity 0.6s var(--e-out);
+  pointer-events: none;
+}
+
+.orb__disc:hover .orb__glow {
+  opacity: 1;
+}
+
+.orb__index {
+  position: absolute;
+  top: 6%;
+  left: 6%;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--fg-3);
+}
+
+/* ---- Rotating circular caption ---- */
+
+.orb__ring {
+  position: absolute;
+  inset: -26px;
   pointer-events: none;
   will-change: transform;
 }
 
-.project--right .project__bigNum {
-  right: auto;
-  left: -0.05em;
+.orb__ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.project__stage {
-  --glow: 0;
-  position: relative;
+.orb__ring text {
+  font-family: var(--f-mono);
+  font-size: 8.2px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  fill: var(--fg-4);
+}
+
+.orb__disc:hover .orb__ring text {
+  fill: var(--cyan);
+}
+
+/* ---- Caption below the disc ---- */
+
+.orb__copy {
+  text-align: center;
   display: grid;
-  place-items: center;
-  padding: clamp(1.5rem, 4vw, 3.5rem);
-  perspective: 1400px;
+  gap: 0.55rem;
+  will-change: transform, opacity;
 }
 
-.project__device {
-  position: relative;
-  z-index: 2;
-  transform-style: preserve-3d;
-  will-change: transform;
+.orb__title {
+  font-family: var(--f-display);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
-.project__glow {
-  position: absolute;
-  inset: 8%;
-  z-index: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(108, 92, 255, 0.34), rgba(53, 224, 255, 0.12) 45%, transparent 70%);
-  filter: blur(60px);
-  opacity: calc(0.35 + var(--glow) * 0.5);
-  transition: opacity 0.6s linear;
-}
-
-.project__body {
-  display: grid;
-  gap: 1.4rem;
-  align-content: center;
-  max-width: 52ch;
-}
-
-.project__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.project__dot {
+.orb__kind {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--fg-4);
 }
 
-.project__title {
-  font-size: clamp(1.9rem, 4.6vw, 3.6rem);
-  font-weight: 700;
-  font-variation-settings: 'wdth' 88;
+.orb__blurb {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--fg-3);
+  max-width: 38ch;
+  margin-inline: auto;
+}
+
+.orb__hint {
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.5s var(--e-out), transform 0.5s var(--e-out);
+}
+
+.orb:hover .orb__hint {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Closing panel ---- */
+
+.orb--end {
+  justify-content: center;
+}
+
+.orb__copy--end {
+  gap: 1.4rem;
+  max-width: 34ch;
+}
+
+.orb__copy--end .orb__blurb {
+  max-width: none;
+}
+
+/* ---- Stacked fallback: touch devices and reduced motion ---- */
+
+@media (max-width: 980px), (prefers-reduced-motion: reduce) {
+  .work__viewport {
+    height: auto;
+    overflow: visible;
+    margin-inline: 0;
+  }
+
+  .work__track {
+    flex-direction: column;
+    gap: clamp(4rem, 12vw, 7rem);
+    padding-inline: 0;
+    transform: none !important;
+  }
+
+  .orb {
+    width: 100%;
+  }
+
+  .orb__disc {
+    width: min(76vw, 340px);
+    height: min(76vw, 340px);
+  }
+
+  /* No scroll-driven bloom here, so the artwork must start fully open. */
+  .orb__shot {
+    clip-path: circle(50% at 50% 50%) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Project modal
+   -------------------------------------------------------------------------- */
+
+.pmodal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-menu);
+  visibility: hidden;
+  opacity: 0;
+  will-change: clip-path;
+}
+
+.pmodal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 4, 6, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 0;
+  cursor: default;
+}
+
+.pmodal__panel {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(3.5rem, 8vw, 6rem) var(--gutter) clamp(3rem, 6vw, 5rem);
+}
+
+.pmodal__inner {
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.pmodal__close {
+  position: fixed;
+  top: clamp(1.2rem, 3vw, 2.2rem);
+  right: clamp(1.2rem, 3vw, 2.2rem);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: rgba(8, 8, 10, 0.6);
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  transition: border-color 0.4s var(--e-out), transform 0.4s var(--e-out);
+}
+
+.pmodal__close:hover {
+  border-color: var(--cyan);
+  transform: rotate(90deg);
+}
+
+.pmodal__close span {
+  position: absolute;
+  width: 15px;
+  height: 1px;
+  background: var(--fg);
+}
+
+.pmodal__close span:first-child {
+  transform: rotate(45deg);
+}
+
+.pmodal__close span:last-child {
+  transform: rotate(-45deg);
+}
+
+.pmodal__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 1.2rem;
+}
+
+.pmodal__meta i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--fg-4);
+}
+
+.pmodal__title {
+  font-family: var(--f-display);
+  font-size: clamp(2.4rem, 7vw, 5rem);
+  font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.98;
 }
 
-.project__summary {
-  font-size: clamp(1rem, 1.3vw, 1.15rem);
+.pmodal__summary {
+  margin-top: 1.2rem;
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  line-height: 1.5;
   color: var(--fg-2);
-  text-wrap: pretty;
+  max-width: 58ch;
+  letter-spacing: -0.02em;
 }
 
-.project__highlights {
+.pmodal__grid {
   display: grid;
-  gap: 0.75rem;
-  padding-top: 0.4rem;
-  border-top: 1px solid var(--line);
-}
-
-.project__highlights li {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.75rem;
+  grid-template-columns: 0.85fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
   align-items: start;
-  padding-top: 0.75rem;
-  font-size: 0.94rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.pmodal__visual {
+  display: grid;
+  place-items: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: radial-gradient(circle at 50% 20%, rgba(108, 92, 255, 0.14), transparent 70%);
+}
+
+.pmodal__visual > * {
+  transform: scale(0.82);
+}
+
+.pmodal__label {
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+  margin-bottom: 0.9rem;
+}
+
+.pmodal__label:not(:first-child) {
+  margin-top: 2.2rem;
+}
+
+.pmodal__list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.pmodal__list li {
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--fg-2);
 }
 
-.project__highlights li i {
+.pmodal__list li i {
+  flex: 0 0 auto;
   width: 5px;
   height: 5px;
-  margin-top: 0.55em;
   border-radius: 50%;
-  background: var(--vio);
+  background: var(--cyan);
+  transform: translateY(-2px);
 }
 
-.project__metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(1.2rem, 3vw, 2.6rem);
-  padding: 1.2rem 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+.pmodal__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
 }
 
-.project__metric {
+.pmodal__metrics > div {
   display: grid;
   gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
 }
 
-.project__metric em {
+.pmodal__metrics em {
   font-style: normal;
   font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
 }
 
-.project__metric b {
-  font-size: 0.95rem;
+.pmodal__metrics b {
   font-weight: 500;
-  letter-spacing: -0.015em;
+  font-size: 0.95rem;
 }
 
-.project__stack {
+.pmodal__stack {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.work__more {
+.pmodal__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  margin-top: clamp(4rem, 10vw, 8rem);
-  padding-top: clamp(2rem, 4vw, 3rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
   border-top: 1px solid var(--line);
 }
 
-.work__more p {
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
+.pmodal__footNote {
+  font-size: 0.95rem;
   color: var(--fg-3);
-  letter-spacing: -0.02em;
+  max-width: 44ch;
 }
 
-@media (max-width: 980px) {
-  .project {
+html.modal-open,
+html.modal-open body {
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .pmodal__grid {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-
-  .project--right .project__stage {
-    order: 0;
-  }
-
-  .project__bigNum {
-    font-size: 40vw;
-    top: -0.2em;
   }
 }
 

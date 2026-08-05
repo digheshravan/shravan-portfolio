@@ -86,6 +86,7 @@ export const PROJECTS = [
       'Row-level security policies enforced at the database layer',
     ],
     stack: ['Flutter', 'Dart', 'Supabase', 'PostgreSQL'],
+    repo: 'https://github.com/digheshravan/doctor-apppointment-application',
     metrics: [
       { k: 'Platforms', v: 'iOS · Android' },
       { k: 'Roles', v: 'Doctor · Patient' },
@@ -108,10 +109,36 @@ export const PROJECTS = [
       'Role-based access control across every protected endpoint',
     ],
     stack: ['Angular', 'Spring Boot', 'MySQL', 'JWT'],
+    repo: 'https://github.com/digheshravan/Car_Rental_System',
     metrics: [
       { k: 'Architecture', v: 'SPA + REST' },
       { k: 'Auth', v: 'JWT' },
       { k: 'Roles', v: 'Admin · Customer' },
+    ],
+  },
+  {
+    // Not on the CV but live on GitHub. Copy below is drawn from the repo's own
+    // description — worth expanding once there's more to say about it.
+    id: '03',
+    slug: 'petpal-ai',
+    title: 'PetPal AI',
+    kind: 'AI-assisted mobile application',
+    year: '2025',
+    device: 'phone',
+    summary:
+      'A Wikipedia-meets-ChatGPT portal for pet parents — reference material and a conversational assistant in one app.',
+    highlights: [
+      'Conversational assistant powered by Google Gemini',
+      'Firebase backend handling auth and data persistence',
+      'Flutter delivers a single codebase across both platforms',
+      'Reference content paired with free-form question answering',
+    ],
+    stack: ['Flutter', 'Firebase', 'Google Gemini', 'Dart'],
+    repo: 'https://github.com/digheshravan/Pet-Care-AI',
+    metrics: [
+      { k: 'Model', v: 'Gemini' },
+      { k: 'Backend', v: 'Firebase' },
+      { k: 'Platforms', v: 'iOS · Android' },
     ],
   },
 ]

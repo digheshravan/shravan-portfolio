@@ -1,177 +1,264 @@
-import { useLayoutEffect, useRef } from 'react'
-import { gsap } from '../lib/gsap'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { gsap, ScrollTrigger } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
-import { PROJECTS } from '../data/content'
+import { PROJECTS, PROFILE } from '../data/content'
 import { SectionHead } from '../components/SectionHead'
-import { Reveal } from '../components/Reveal'
 import { PhoneMock, BrowserMock } from '../components/DeviceMock'
+import { ProjectModal } from '../components/ProjectModal'
 import { Magnetic } from '../components/Magnetic'
 
 export function Work() {
   const root = useRef(null)
+  const viewport = useRef(null)
+  const track = useRef(null)
+  const [active, setActive] = useState(null)
+  const [origin, setOrigin] = useState(null)
+
+  const openProject = useCallback((project, e) => {
+    // Keyboard activation (Enter/Space on a focused orb) reports clientX/Y as 0,
+    // which would bloom the reveal from the top-left corner of the screen
+    // instead of the thing that was activated. Fall back to the button's centre.
+    const rect = e.currentTarget.getBoundingClientRect()
+    const fromPointer = e.clientX > 0 || e.clientY > 0
+    setOrigin(
+      fromPointer
+        ? { x: e.clientX, y: e.clientY }
+        : { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    )
+    setActive(project)
+  }, [])
+
+  const close = useCallback(() => setActive(null), [])
 
   useLayoutEffect(() => {
     const el = root.current
     if (!el) return
-    if (prefersReducedMotion()) return
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia()
 
-      mm.add('(min-width: 981px)', () => {
-        gsap.utils.toArray('.project').forEach((project) => {
-          const stage = project.querySelector('.project__stage')
-          const device = project.querySelector('.project__device')
+      /**
+       * Desktop: the section pins and the track slides sideways, so vertical
+       * scrolling reads as horizontal travel. Once the last panel clears, the
+       * pin releases and the page returns to normal vertical scroll on its own —
+       * no snapping and no wheel hijacking, just a longer scroll distance.
+       */
+      mm.add(
+        { desktop: '(min-width: 981px) and (prefers-reduced-motion: no-preference)' },
+        () => {
+          const trackEl = track.current
+          const viewEl = viewport.current
+          if (!trackEl || !viewEl) return
 
-          // The visual drifts and settles while the copy scrolls past it.
-          gsap.fromTo(
-            device,
-            { yPercent: 9, rotateX: 9, rotateY: -13, scale: 0.94 },
-            {
-              yPercent: -9,
-              rotateX: -4,
-              rotateY: 6,
-              scale: 1,
-              ease: 'none',
-              scrollTrigger: { trigger: project, start: 'top bottom', end: 'bottom top', scrub: 1 },
-            }
-          )
+          // Recomputed on every refresh so resizes and font swaps stay correct.
+          const distance = () => Math.max(0, trackEl.scrollWidth - window.innerWidth)
 
-          gsap.to(stage, {
-            '--glow': 1,
-            scrollTrigger: { trigger: project, start: 'top 70%', end: 'bottom 40%', scrub: true },
-          })
-        })
-      })
-
-      gsap.utils.toArray('.project').forEach((project) => {
-        gsap.fromTo(
-          project.querySelectorAll('.project__reveal'),
-          { y: 46, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            stagger: 0.08,
-            ease: 'out-expo',
-            scrollTrigger: { trigger: project, start: 'top 72%', once: true },
-          }
-        )
-
-        // The oversized project number counter-scrolls behind the content.
-        gsap.fromTo(
-          project.querySelector('.project__bigNum'),
-          { yPercent: 18 },
-          {
-            yPercent: -24,
+          const scrollTween = gsap.to(trackEl, {
+            x: () => -distance(),
             ease: 'none',
-            scrollTrigger: { trigger: project, start: 'top bottom', end: 'bottom top', scrub: 1.2 },
-          }
-        )
-      })
+            scrollTrigger: {
+              trigger: viewEl,
+              start: 'top top',
+              end: () => '+=' + distance(),
+              pin: true,
+              scrub: 0.8,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          })
+
+          // Each orb blooms open as it crosses the middle of the screen. The
+          // clip-path circle is the transition the whole section is built
+          // around — the artwork arrives by expanding, not by sliding in.
+          gsap.utils.toArray('.orb').forEach((orb) => {
+            const disc = orb.querySelector('.orb__disc')
+            const shot = orb.querySelector('.orb__shot')
+            const copy = orb.querySelector('.orb__copy')
+
+            const bloom = {
+              trigger: orb,
+              containerAnimation: scrollTween,
+              start: 'left 92%',
+              end: 'center 58%',
+              scrub: true,
+            }
+
+            // Only the screenshot is clipped. Putting the circle on the disc
+            // instead would cut off the caption ring and the glow, which live
+            // outside the artwork's edge.
+            gsap.fromTo(
+              shot,
+              { clipPath: 'circle(28% at 50% 50%)' },
+              { clipPath: 'circle(50% at 50% 50%)', ease: 'none', scrollTrigger: bloom }
+            )
+
+            gsap.fromTo(
+              disc,
+              { scale: 0.74, rotate: -8 },
+              { scale: 1, rotate: 0, ease: 'none', scrollTrigger: bloom }
+            )
+
+            gsap.fromTo(
+              copy,
+              { y: 42, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: orb,
+                  containerAnimation: scrollTween,
+                  start: 'left 80%',
+                  end: 'center 62%',
+                  scrub: true,
+                },
+              }
+            )
+
+            // The ring counter-rotates against travel, which is what sells the
+            // orbs as objects passing by rather than images on a conveyor.
+            gsap.to(orb.querySelector('.orb__ring'), {
+              rotate: 190,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: orb,
+                containerAnimation: scrollTween,
+                start: 'left right',
+                end: 'right left',
+                scrub: true,
+              },
+            })
+          })
+
+          return () => scrollTween.scrollTrigger?.kill()
+        }
+      )
+
+      // Mobile and reduced motion: a plain vertical stack. Pinning a horizontal
+      // rail on a touch device fights the user's own scroll direction.
+      mm.add(
+        { stacked: '(max-width: 980px), (prefers-reduced-motion: reduce)' },
+        () => {
+          if (prefersReducedMotion()) return
+          gsap.utils.toArray('.orb').forEach((orb) => {
+            gsap.fromTo(
+              orb,
+              { y: 56, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 1.1,
+                ease: 'out-expo',
+                scrollTrigger: { trigger: orb, start: 'top 86%', once: true },
+              }
+            )
+          })
+        }
+      )
     }, el)
 
     return () => ctx.revert()
   }, [])
 
+  // Layout shifts when the modal closes; make sure the pin re-measures.
+  useLayoutEffect(() => {
+    if (!active) ScrollTrigger.refresh()
+  }, [active])
+
   return (
-    <section className="section work" id="work" ref={root} data-panel>
+    <section className="section work" id="work" ref={root}>
       <SectionHead
         index="03"
         label="Work"
-        title="Two products, end to end"
-        note="Designed, built and shipped solo — from schema to interface."
+        title="Three products, end to end"
+        note="Scroll sideways. Tap any one to open the full story."
       />
 
-      <div className="work__list">
-        {PROJECTS.map((project, i) => (
-          <article
-            className={`project project--${i % 2 === 0 ? 'left' : 'right'}`}
-            key={project.id}
-            data-parallax-scope
-          >
-            <span className="project__bigNum" aria-hidden="true">
-              {project.id}
-            </span>
+      <div className="work__viewport" ref={viewport}>
+        <div className="work__track" ref={track}>
+          {PROJECTS.map((project) => (
+            <article className="orb" key={project.id}>
+              <button
+                className="orb__disc"
+                onClick={(e) => openProject(project, e)}
+                aria-label={`Open details for ${project.title}`}
+                data-cursor-label="Open"
+              >
+                <span className="orb__ring" aria-hidden="true">
+                  <svg viewBox="0 0 200 200">
+                    <defs>
+                      <path
+                        id={`ring-${project.slug}`}
+                        d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"
+                        fill="none"
+                      />
+                    </defs>
+                    <text>
+                      <textPath href={`#ring-${project.slug}`} startOffset="0%">
+                        {`${project.title} — ${project.year} — view case — `}
+                      </textPath>
+                    </text>
+                  </svg>
+                </span>
 
-            <div className="project__stage">
-              <div className="project__device">
-                {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
+                <span className="orb__shot">
+                  {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
+                </span>
+
+                <span className="orb__glow" aria-hidden="true" />
+                <span className="orb__index mono" aria-hidden="true">
+                  {project.id}
+                </span>
+              </button>
+
+              <div className="orb__copy">
+                <h3 className="orb__title">{project.title}</h3>
+                <p className="orb__kind mono">{project.kind}</p>
+                <p className="orb__blurb">{project.summary}</p>
+                <span className="orb__hint mono" aria-hidden="true">
+                  Click to explore →
+                </span>
               </div>
-              <div className="project__glow" aria-hidden="true" />
-            </div>
+            </article>
+          ))}
 
-            <div className="project__body" data-parallax="0.055">
-              <div className="project__meta mono project__reveal">
-                <span>{project.year}</span>
-                <span className="project__dot">·</span>
-                <span>{project.kind}</span>
-              </div>
-
-              <h3 className="project__title">
-                <Reveal mode="word" stagger={0.05}>
-                  {project.title}
-                </Reveal>
-              </h3>
-
-              <p className="project__summary project__reveal">{project.summary}</p>
-
-              <ul className="project__highlights">
-                {project.highlights.map((h) => (
-                  <li className="project__reveal" key={h}>
-                    <i aria-hidden="true" />
-                    {h}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="project__metrics project__reveal">
-                {project.metrics.map((m) => (
-                  <div className="project__metric" key={m.k}>
-                    <em className="mono">{m.k}</em>
-                    <b>{m.v}</b>
-                  </div>
-                ))}
-              </div>
-
-              <div className="project__stack project__reveal">
-                {project.stack.map((s) => (
-                  <span className="chip" key={s}>
-                    {s}
+          {/* Closing panel so the rail ends on an invitation, not a hard stop. */}
+          <article className="orb orb--end">
+            <div className="orb__copy orb__copy--end">
+              <h3 className="orb__title">More on GitHub</h3>
+              <p className="orb__blurb">
+                Attendance trackers, course work and whatever I'm building this week — the
+                repositories are all public.
+              </p>
+              <Magnetic strength={0.35}>
+                <a
+                  className="btn btn--primary"
+                  href={PROFILE.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor-label="GitHub"
+                >
+                  <span data-magnetic-inner>
+                    Browse the code
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                      <path
+                        d="M3 13L13 3M13 3H5M13 3v8"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </span>
-                ))}
-              </div>
+                </a>
+              </Magnetic>
             </div>
           </article>
-        ))}
+        </div>
       </div>
 
-      <div className="work__more">
-        <p>More on the way — the repos are public.</p>
-        <Magnetic strength={0.35}>
-          <a
-            className="btn btn--ghost"
-            href="https://github.com/digheshravan"
-            target="_blank"
-            rel="noreferrer"
-            data-cursor-label="GitHub"
-          >
-            <span data-magnetic-inner>
-              Browse the code
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-                <path
-                  d="M3 13L13 3M13 3H5M13 3v8"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </a>
-        </Magnetic>
-      </div>
+      <ProjectModal project={active} origin={origin} onClose={close} />
     </section>
   )
 }
