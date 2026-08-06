@@ -15,6 +15,7 @@ import { Marquee } from './components/Marquee'
 const Scene = lazy(() => import('./three/Scene').then((m) => ({ default: m.Scene })))
 
 import { Hero } from './sections/Hero'
+import { Focus } from './sections/Focus'
 import { About } from './sections/About'
 import { Skills } from './sections/Skills'
 import { Work } from './sections/Work'
@@ -81,6 +82,7 @@ export default function App() {
           />
         </div>
 
+        <Focus />
         <About />
         <Skills />
         <Work />

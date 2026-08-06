@@ -72,7 +72,7 @@ export function About() {
 
   return (
     <section className="section about" id="about" ref={root} data-panel>
-      <SectionHead index="01" label="About" title="The short version" />
+      <SectionHead index="02" label="About" title="The short version" />
 
       <div className="about__statement">
         <p className="about__text">
@@ -96,11 +96,23 @@ export function About() {
       <div className="about__cards">
         <article className="about__card">
           <h3>
-            <Reveal>Product-first engineering</Reveal>
+            <Reveal>Security is a design decision</Reveal>
           </h3>
           <p>
-            A certified UI/UX foundation means I don't hand off at the API boundary. Interface
-            states, empty screens and error paths are part of the build, not a follow-up ticket.
+            Access control belongs in the database, not in a client-side check that a determined
+            user can simply skip. Row-level policies and JWT-guarded endpoints are how every
+            product I ship decides who may do what.
+          </p>
+        </article>
+
+        <article className="about__card">
+          <h3>
+            <Reveal>AI where it earns its place</Reveal>
+          </h3>
+          <p>
+            A model is a component with unusually interesting failure modes. The engineering is in
+            the boundaries around it — what you send, what you trust back, and what happens the
+            moment it is wrong.
           </p>
         </article>
 
@@ -110,17 +122,8 @@ export function About() {
           </h3>
           <p>
             Flutter for cross-platform delivery, Spring Boot and Angular where the web needs to be
-            first-class. Chosen per problem, not per habit.
-          </p>
-        </article>
-
-        <article className="about__card">
-          <h3>
-            <Reveal>Tech that answers to business</Reveal>
-          </h3>
-          <p>
-            An MBA Tech degree is a deliberate bet: the best technical decision is the one that
-            survives contact with cost, timeline and the people using it.
+            first-class, React and WebGL when the interface itself is the argument. Chosen per
+            problem, not per habit.
           </p>
         </article>
       </div>
