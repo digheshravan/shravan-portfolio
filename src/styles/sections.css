@@ -306,14 +306,64 @@
   align-items: start;
   gap: clamp(1.2rem, 3vw, 3.5rem);
   padding: clamp(1.8rem, 3.4vw, 2.9rem) 0;
-  transition: opacity 0.55s var(--e-out);
+  padding-left: 0;
+  /* isolate guarantees the ::before wash stays behind this row's own text
+     rather than slipping behind the section. */
+  isolation: isolate;
+  transition: opacity 0.55s var(--e-out), padding-left 0.6s var(--e-out);
   will-change: transform, opacity;
+}
+
+/* The lit panel behind the hovered row. Bleeds into the gutter so the
+   highlight reads as a band across the page, not a box around the text. */
+.skillRow::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(var(--gutter) * -0.5);
+  z-index: -1;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(108, 92, 255, 0.16),
+    rgba(53, 224, 255, 0.07) 46%,
+    transparent 78%
+  );
+  opacity: 0;
+  transition: opacity 0.5s var(--e-out);
+  pointer-events: none;
+}
+
+.skillRow:hover::before {
+  opacity: 1;
+}
+
+/* Accent bar that grows down the leading edge of the active row. */
+.skillRow::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--gutter) * -0.5);
+  top: 12%;
+  bottom: 12%;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--iri);
+  transform: scaleY(0);
+  transition: transform 0.6s var(--e-out);
+  pointer-events: none;
+}
+
+.skillRow:hover::after {
+  transform: scaleY(1);
+}
+
+.skillRow:hover {
+  padding-left: clamp(0.7rem, 1.6vw, 1.5rem);
 }
 
 /* Sibling dimming without a line of JavaScript. Hovering one row quietens the
    others so the list reads as a focus, not as four competing blocks. */
 .skills__list:has(.skillRow:hover) .skillRow:not(:hover) {
-  opacity: 0.38;
+  opacity: 0.26;
 }
 
 /* ---- Left column: index + title ---- */
@@ -328,11 +378,12 @@
   font-size: 0.62rem;
   letter-spacing: 0.16em;
   color: var(--fg-4);
-  transition: color 0.5s var(--e-out);
+  transition: color 0.5s var(--e-out), transform 0.5s var(--e-out);
 }
 
 .skillRow:hover .skillRow__index {
   color: var(--cyan);
+  transform: translateY(-2px);
 }
 
 .skillRow__title {
@@ -342,11 +393,17 @@
   font-variation-settings: 'wdth' 86;
   letter-spacing: -0.04em;
   line-height: 1;
-  transition: transform 0.6s var(--e-out), color 0.5s var(--e-out);
+  color: var(--fg-2);
+  transition: transform 0.6s var(--e-out), color 0.45s var(--e-out),
+    text-shadow 0.6s var(--e-out);
 }
 
+/* Resting at fg-2 and lifting to full fg gives the hover somewhere to travel
+   to; a title already at full brightness has no headroom to highlight into. */
 .skillRow:hover .skillRow__title {
+  color: var(--fg);
   transform: translateX(clamp(4px, 0.7vw, 10px));
+  text-shadow: 0 0 34px rgba(53, 224, 255, 0.4);
 }
 
 /* ---- Right column: blurb + tokens ---- */
@@ -384,16 +441,18 @@
   color: var(--fg-3);
   background: rgba(242, 239, 233, 0.02);
   transition: border-color 0.45s var(--e-out), color 0.45s var(--e-out),
-    background-color 0.45s var(--e-out), transform 0.5s var(--e-out);
+    background-color 0.45s var(--e-out), transform 0.5s var(--e-out),
+    box-shadow 0.5s var(--e-out);
 }
 
 /* The tokens lift in sequence rather than all at once — the delay is the only
    thing that makes four chips read as a set being dealt out. */
 .skillRow:hover .skillRow__items li {
-  border-color: rgba(53, 224, 255, 0.3);
-  background: rgba(53, 224, 255, 0.06);
-  color: var(--fg);
-  transform: translateY(-3px);
+  border-color: rgba(53, 224, 255, 0.55);
+  background: rgba(53, 224, 255, 0.13);
+  color: #fff;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px -10px rgba(53, 224, 255, 0.65);
   transition-delay: calc(var(--i, 0) * 40ms);
 }
 
@@ -429,11 +488,12 @@
   background: var(--iri);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.8s var(--e-out);
+  transition: transform 0.8s var(--e-out), box-shadow 0.6s var(--e-out);
 }
 
 .skillRow:hover .skillRow__rule i {
   transform: scaleX(1);
+  box-shadow: 0 0 14px 1px rgba(53, 224, 255, 0.6);
 }
 
 /* ---- Narrow layouts ---- */
@@ -471,11 +531,27 @@
     font-size: 0.62rem;
     padding: 0.38em 0.7em;
   }
+
+  /* The gutter is too narrow here for the highlight to bleed into it without
+     touching the screen edge, so it tucks back inside. */
+  .skillRow::before {
+    inset: 0 calc(var(--gutter) * -0.28);
+  }
+
+  .skillRow::after {
+    left: calc(var(--gutter) * -0.28);
+  }
 }
 
 /* Touch devices never get a hover state, so the tokens must read as finished
    without one. */
 @media (hover: none) {
+  /* The title rests dimmer specifically so hover has somewhere to go. Without
+     a hover to resolve it, that headroom just reads as washed-out type. */
+  .skillRow__title {
+    color: var(--fg);
+  }
+
   .skillRow__items li {
     border-color: var(--line-2);
     color: var(--fg-2);
