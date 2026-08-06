@@ -24,6 +24,12 @@
   --pink: #ff6fb5;
   --iri: linear-gradient(100deg, var(--vio), var(--cyan) 48%, var(--pink));
 
+  /* Status — deliberately outside the brand triad. The iridescent colours mean
+     "this is the brand"; these mean "this is the state of something". Letting
+     one set do both jobs is how a palette stops communicating. */
+  --live: #3ecf8e;
+  --learning: #f5a524;
+
   /* Type */
   --f-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
   --f-serif: 'Instrument Serif', Georgia, serif;

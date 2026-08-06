@@ -40,10 +40,10 @@ export function Skills() {
   return (
     <section className="section skills" id="skills" ref={root} data-panel>
       <SectionHead
-        index="02"
+        index="03"
         label="Craft"
         title="What I build with"
-        note="Four layers of the stack, learned in the order that lets me ship a whole product alone."
+        note="Grouped by what I can be handed, not by what I have read about."
       />
 
       {/* No hover state in React: the dimming of unhovered rows is done in CSS

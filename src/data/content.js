@@ -6,8 +6,9 @@
 export const PROFILE = {
   first: 'Shravan',
   last: 'Dige',
-  role: 'Computer Engineer',
-  tagline: 'I design and ship full-stack web and cross-platform mobile products.',
+  role: 'Software Engineer',
+  tagline:
+    'I build secure, AI-powered products for mobile and web — from the database schema up to the interface.',
   degree: 'MBA Tech — Computer Engineering',
   school: 'NMIMS Mumbai',
   cohort: 'Class of 2028',
@@ -20,52 +21,121 @@ export const PROFILE = {
   github: 'https://github.com/digheshravan',
   resume: '/Shravan-Dige-CV.pdf',
   statement:
-    'Computer Engineering student at NMIMS Mumbai with hands-on experience designing and delivering full-stack web and cross-platform mobile applications. Skilled in Flutter, Spring Boot and Angular, with a solid understanding of backend APIs, database design and UI/UX principles. Pursuing an MBA Tech degree to bridge technology with business strategy, with a passion for building intuitive, scalable and impactful digital products.',
+    'I am a Computer Engineering student at NMIMS Mumbai who builds across four fronts: application security, AI-powered features, cross-platform mobile, and full-stack web. I started with a diploma before the degree, so the keyboard came before the theory — three shipped products later, the pattern I keep returning to is the boundary where a system trusts input it should not. Securing that boundary is where I am taking my work next.',
 }
 
 export const STATS = [
+  { value: '03', label: 'Products shipped' },
+  { value: '04', label: 'Domains in play' },
+  { value: 'SIH', label: "'25 college round" },
   { value: '2028', label: 'MBA Tech, NMIMS' },
-  { value: '02', label: 'Flagship builds' },
-  { value: '04', label: 'Stacks in production' },
-  { value: 'SIH', label: "'25 selected" },
 ]
 
 export const MARQUEE = [
+  'Application security',
+  'JWT',
+  'Row-level security',
+  'Google Gemini',
   'Flutter',
   'Spring Boot',
   'Angular',
   'Supabase',
+  'Firebase',
   'REST APIs',
-  'MySQL',
-  'Figma',
-  'Dart',
-  'Java',
 ]
 
-export const SKILLS = [
+/**
+ * The four fronts the whole site is organised around.
+ *
+ * `status` is deliberately honest: two of these are shipping, two are being
+ * built toward. A student who marks the difference reads as self-aware; one who
+ * claims mastery of everything reads as unverified — and recruiters check.
+ */
+export const FOCUS = [
   {
     id: '01',
-    group: 'Languages',
-    blurb: 'The grammar I think in — typed, compiled, and on the wire.',
-    items: ['Java', 'Dart', 'JavaScript', 'SQL', 'HTML', 'CSS'],
+    title: 'Application security',
+    status: 'Going deeper',
+    tone: 'learning',
+    blurb:
+      'Every product I have shipped enforces who may do what. That started as a requirement and became the part I find most interesting.',
+    evidence: [
+      'JWT-secured REST API across every protected endpoint',
+      'Row-level security policies enforced in the database, not the client',
+      'Role-based access separating Admin/Customer and Doctor/Patient journeys',
+    ],
+    stack: ['JWT', 'Row-level security', 'RBAC', 'Auth flows'],
   },
   {
     id: '02',
-    group: 'Frameworks',
-    blurb: 'From a single Dart codebase to a JWT-secured service layer.',
-    items: ['Flutter', 'Spring Boot', 'Angular', 'REST APIs'],
+    title: 'AI-based applications',
+    status: 'Shipping',
+    tone: 'live',
+    blurb:
+      'Wiring real models into real products — where the interesting work is the failure modes, not the happy path.',
+    evidence: [
+      'PetPal AI: conversational assistant built on Google Gemini',
+      'Firebase handling auth, persistence and live sync',
+      'Reference content paired with free-form question answering',
+    ],
+    stack: ['Google Gemini', 'Firebase', 'Prompt design', 'REST'],
   },
   {
     id: '03',
-    group: 'Databases',
-    blurb: 'Normalised schemas, row-level security, real-time subscriptions.',
-    items: ['MySQL', 'Supabase', 'PostgreSQL'],
+    title: 'Mobile applications',
+    status: 'Shipping',
+    tone: 'live',
+    blurb:
+      'One Dart codebase, both platforms. Cross-platform is only worth it if the result does not feel ported — so it does not.',
+    evidence: [
+      'Three Flutter apps built and released to both platforms',
+      'Real-time appointment sync with multi-role authentication',
+      'Offline-tolerant flows and empty/error states designed, not skipped',
+    ],
+    stack: ['Flutter', 'Dart', 'Android Studio', 'iOS · Android'],
   },
   {
     id: '04',
-    group: 'Tools & Design',
-    blurb: 'Certified in UI/UX — I ship the interface, not just the endpoint.',
-    items: ['Figma', 'Git', 'GitHub', 'Android Studio', 'VS Code', 'Postman'],
+    title: 'Web development',
+    status: 'Shipping',
+    tone: 'live',
+    blurb:
+      'Spring Boot services behind single-page frontends — and the occasional WebGL detour, like the site you are reading.',
+    evidence: [
+      'Angular SPA over a Spring Boot REST API, normalised MySQL schema',
+      'End-to-end rental operations: inventory, bookings and billing',
+      'This portfolio: React, Three.js and custom GLSL, scoring 60 fps',
+    ],
+    stack: ['Java', 'Spring Boot', 'Angular', 'React', 'MySQL'],
+  },
+]
+
+/** Grouped by the four fronts above rather than by "languages / frameworks",
+ *  so the list answers what I can be handed rather than what I have read. */
+export const SKILLS = [
+  {
+    id: '01',
+    group: 'Security',
+    blurb: 'Guarding the boundary where a system trusts input it should not.',
+    items: ['JWT', 'Row-level security', 'Role-based access', 'Auth flows', 'Input validation'],
+  },
+  {
+    id: '02',
+    group: 'AI & intelligence',
+    blurb: 'Models wired into products, with the failure modes designed for.',
+    items: ['Google Gemini', 'Firebase', 'Prompt design', 'API integration'],
+  },
+  {
+    id: '03',
+    group: 'Mobile',
+    blurb: 'One Dart codebase, two platforms, no ported-feeling compromises.',
+    items: ['Flutter', 'Dart', 'Android Studio', 'Cross-platform'],
+  },
+  {
+    id: '04',
+    group: 'Web & backend',
+    blurb: 'Typed services, normalised schemas, and interfaces worth using.',
+    items: ['Java', 'Spring Boot', 'Angular', 'React', 'MySQL', 'PostgreSQL', 'REST APIs'],
   },
 ]
 
@@ -189,6 +259,7 @@ export const RECOGNITION = [
 
 export const NAV = [
   { label: 'Index', href: '#hero' },
+  { label: 'Focus', href: '#focus' },
   { label: 'About', href: '#about' },
   { label: 'Craft', href: '#skills' },
   { label: 'Work', href: '#work' },

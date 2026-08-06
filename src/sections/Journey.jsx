@@ -90,7 +90,7 @@ export function Journey() {
   return (
     <section className="section journey" id="journey" ref={root} data-panel>
       <SectionHead
-        index="04"
+        index="05"
         label="Path"
         title="How I got here"
         note="Diploma first, degree second — hands on the keyboard before theory."
