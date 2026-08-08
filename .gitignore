@@ -19,6 +19,12 @@ dist-ssr
 # it was made from, and it carries a phone number, so it stays out of the repo.
 Shravan_CV*.pdf
 
+# Internship report. Contains a former employer's internal business strategy,
+# named mentors, roll/SAP identifiers, and an unresolved security item in a live
+# product. It is source material for writing the site — never a published asset.
+*Final Report TIP*.pdf
+*Internship*Report*.pdf
+
 # OS noise
 .DS_Store
 Thumbs.db
