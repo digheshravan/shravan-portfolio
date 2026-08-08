@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-08T00:00:00.000Z",
+  "title": "Design System: Shravan Dige Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "signal-violet": {
+        "role": "primary",
+        "displayName": "Signal Violet",
+        "canonical": "#6C5CFF",
+        "tonalRamp": ["#100D26", "#1C1747", "#2B2270", "#3D309C", "#5245C8", "#6C5CFF", "#9086FF", "#C3BDFF"]
+      },
+      "instrument-cyan": {
+        "role": "primary",
+        "displayName": "Instrument Cyan",
+        "canonical": "#35E0FF",
+        "tonalRamp": ["#04222A", "#073B49", "#0A5A6E", "#0E7D99", "#1BA6C9", "#35E0FF", "#7BEBFF", "#BFF5FF"]
+      },
+      "readout-rose": {
+        "role": "tertiary",
+        "displayName": "Readout Rose",
+        "canonical": "#FF6FB5",
+        "tonalRamp": ["#2B0A1C", "#48122E", "#6D1C45", "#96285E", "#C43C7C", "#FF6FB5", "#FFA0CE", "#FFD0E6"]
+      },
+      "status-live": {
+        "role": "secondary",
+        "displayName": "Status Live",
+        "canonical": "#3ECF8E",
+        "tonalRamp": ["#062316", "#093B26", "#0D5938", "#12794D", "#219E68", "#3ECF8E", "#7CE1B4", "#BDF0D9"]
+      },
+      "status-learning": {
+        "role": "secondary",
+        "displayName": "Status Learning",
+        "canonical": "#F5A524",
+        "tonalRamp": ["#2A1B03", "#472D05", "#6B4408", "#945D0B", "#C27B10", "#F5A524", "#F9C46E", "#FCE1B6"]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#08080A",
+        "tonalRamp": ["#08080A", "#0D0D12", "#121219", "#1B1B24", "#2A2A36", "#4A4A5A", "#8C8C99", "#F2EFE9"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#F2EFE9",
+        "tonalRamp": ["#1A1917", "#312F2C", "#4C4945", "#6B6862", "#8E8A83", "#B4AFA7", "#D6D1CA", "#F2EFE9"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The name in the hero, revealed glyph by glyph from overflow-hidden masks. Once per page." },
+      "headline": { "displayName": "Headline", "purpose": "Case-study and modal titles." },
+      "title": { "displayName": "Title", "purpose": "Section headlines, pillar titles, card titles." },
+      "body": { "displayName": "Body", "purpose": "Running text, held to a 46-68ch measure." },
+      "label": { "displayName": "Label", "purpose": "Indices, kickers, metadata, stack names, coordinates. Never decorative." },
+      "accent": { "displayName": "Accent Serif", "purpose": "Exactly one emphasised word per section, italic only." }
+    },
+    "shadows": [
+      { "name": "stage-lift", "value": "0 40px 120px -50px rgba(0, 0, 0, 0.9)", "purpose": "The project card, and only the project card. Sinks it into the page rather than lifting it off." },
+      { "name": "focus-glow", "value": "0 8px 22px -10px rgba(53, 224, 255, 0.65)", "purpose": "Token tiles lifting on hover." },
+      { "name": "edge-glow", "value": "0 0 14px 1px rgba(53, 224, 255, 0.6)", "purpose": "The rule beneath an active skill row as it fills." },
+      { "name": "live-pulse", "value": "0 0 0 4px rgba(62, 207, 142, 0)", "purpose": "Animated ring on a Shipping status dot, 2.6s cycle." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for every entrance, hover and settle. The house curve." },
+      { "name": "ease-inout", "value": "cubic-bezier(0.83, 0, 0.17, 1)", "purpose": "Symmetric moves: curtain wipes, clip-path reveals, ambient pulses." },
+      { "name": "duration-fast", "value": "180ms", "purpose": "Tool-like responses that must feel instant." },
+      { "name": "duration-base", "value": "450ms", "purpose": "Standard hover and state resolution." },
+      { "name": "duration-slow", "value": "900ms", "purpose": "Entrances and scroll-driven reveals." },
+      { "name": "lenis-lerp", "value": "0.085", "purpose": "Smooth-scroll damping. Lerp rather than duration, so rapid wheel ticks do not interrupt each other." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "620px" },
+      { "name": "sm", "value": "900px" },
+      { "name": "md", "value": "980px" },
+      { "name": "lg", "value": "1100px" },
+      { "name": "xl", "value": "1240px" },
+      { "name": "short", "value": "780px (height)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink fill behind ground-coloured text. The fill scales on hover while the label stays put.",
+      "html": "<button class=\"ds-btn-primary\"><span>Selected work</span></button>",
+      "css": ".ds-btn-primary { position: relative; display: inline-flex; align-items: center; gap: .5em; border: 0; border-radius: 100px; padding: .95em 1.6em; font-family: 'Inter Tight', Arial, sans-serif; font-size: .86rem; font-weight: 500; letter-spacing: -.01em; color: #08080A; background: transparent; overflow: hidden; isolation: isolate; cursor: pointer; } .ds-btn-primary::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: #F2EFE9; transition: transform .5s cubic-bezier(.16,1,.3,1); } .ds-btn-primary:hover::before { transform: scale(1.06); } .ds-btn-primary:focus-visible { outline: 2px solid #35E0FF; outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Hairline-bordered sibling of the primary, same geometry.",
+      "html": "<button class=\"ds-btn-ghost\"><span>Get in touch</span></button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; border-radius: 100px; padding: .95em 1.6em; font-family: 'Inter Tight', Arial, sans-serif; font-size: .86rem; font-weight: 500; letter-spacing: -.01em; color: #F2EFE9; background: transparent; border: 1px solid rgba(242,239,233,.18); cursor: pointer; transition: border-color .45s cubic-bezier(.16,1,.3,1); } .ds-btn-ghost:hover { border-color: rgba(242,239,233,.4); } .ds-btn-ghost:focus-visible { outline: 2px solid #35E0FF; outline-offset: 3px; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Technology and stack names. Fully round, no fill.",
+      "html": "<span class=\"ds-chip\">Spring Boot</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; padding: .42em .85em; border: 1px solid rgba(242,239,233,.18); border-radius: 100px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(242,239,233,.64); transition: border-color .4s cubic-bezier(.16,1,.3,1), color .4s cubic-bezier(.16,1,.3,1); } .ds-chip:hover { border-color: rgba(53,224,255,.45); color: #F2EFE9; }"
+    },
+    {
+      "name": "Token Tile",
+      "kind": "chip",
+      "refersTo": "token-tile",
+      "description": "The squared sibling of the chip, used for skills. Lifts and glows on hover; in a row these stagger 40ms apart.",
+      "html": "<span class=\"ds-token\">Row-level security</span>",
+      "css": ".ds-token { display: inline-flex; align-items: center; padding: .42em .85em; border: 1px solid rgba(242,239,233,.1); border-radius: 8px; background: rgba(242,239,233,.02); font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .66rem; letter-spacing: .05em; color: rgba(242,239,233,.4); transition: border-color .45s cubic-bezier(.16,1,.3,1), color .45s cubic-bezier(.16,1,.3,1), background-color .45s cubic-bezier(.16,1,.3,1), transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s cubic-bezier(.16,1,.3,1); } .ds-token:hover { border-color: rgba(53,224,255,.55); background: rgba(53,224,255,.13); color: #fff; transform: translateY(-4px); box-shadow: 0 8px 22px -10px rgba(53,224,255,.65); }"
+    },
+    {
+      "name": "Status Badge — Live",
+      "kind": "custom",
+      "refersTo": "pill-live",
+      "description": "Something is shipping. The dot pulses; the Learning variant is static, and that difference is the signal.",
+      "html": "<span class=\"ds-status ds-status--live\"><i></i>Shipping</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: .45rem; padding: .3em .7em; border: 1px solid currentColor; border-radius: 100px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; } .ds-status i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; } .ds-status--live { color: #3ECF8E; } .ds-status--live i { animation: ds-pulse 2.6s cubic-bezier(.83,0,.17,1) infinite; } @keyframes ds-pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(62,207,142,.5); } 50% { opacity: .7; box-shadow: 0 0 0 4px rgba(62,207,142,0); } }"
+    },
+    {
+      "name": "Panel Card",
+      "kind": "card",
+      "refersTo": "panel-card",
+      "description": "The pillar and experience surface. Tonal gradient over the ground, hairline border, radial violet wash on hover.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-card__id\">01</span><h3>Application security</h3><p>Guarding the boundary where a system trusts input it should not.</p></article>",
+      "css": ".ds-card { position: relative; display: flex; flex-direction: column; gap: .6rem; padding: 1.8rem; border: 1px solid rgba(242,239,233,.1); border-radius: 16px; background: linear-gradient(158deg, rgba(242,239,233,.035), rgba(242,239,233,.008)); overflow: hidden; isolation: isolate; transition: border-color .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1); } .ds-card::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(120% 80% at 12% 0%, rgba(108,92,255,.16), transparent 62%); opacity: 0; transition: opacity .55s cubic-bezier(.16,1,.3,1); } .ds-card:hover { border-color: rgba(242,239,233,.18); transform: translateY(-4px); } .ds-card:hover::before { opacity: 1; } .ds-card__id { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .62rem; letter-spacing: .16em; color: rgba(242,239,233,.22); } .ds-card h3 { font-family: Archivo, Arial, sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; line-height: 1.05; color: #F2EFE9; margin: 0; } .ds-card p { font-family: 'Inter Tight', Arial, sans-serif; font-size: .95rem; line-height: 1.55; color: rgba(242,239,233,.64); margin: 0; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Uppercase mono, ink-quiet at rest, ink when active.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"is-active\">Index</a><a href=\"#\">Focus</a><a href=\"#\">Work</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 1.6rem; } .ds-nav a { position: relative; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(242,239,233,.4); text-decoration: none; padding: .2em 0; transition: color .45s cubic-bezier(.16,1,.3,1); } .ds-nav a:hover, .ds-nav a.is-active { color: #F2EFE9; } .ds-nav a.is-active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: #35E0FF; } .ds-nav a:focus-visible { outline: 2px solid #35E0FF; outline-offset: 4px; }"
+    },
+    {
+      "name": "Skill Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature component. The baseline rule fills in the iridescent gradient and glows; siblings quieten via :has().",
+      "html": "<div class=\"ds-rowlist\"><div class=\"ds-row\"><h3>Security</h3><p>Guarding the boundary where a system trusts input it should not.</p><span class=\"ds-row__rule\"><i></i></span></div><div class=\"ds-row\"><h3>Mobile</h3><p>One Dart codebase, two platforms.</p><span class=\"ds-row__rule\"><i></i></span></div></div>",
+      "css": ".ds-rowlist { border-top: 1px solid rgba(242,239,233,.1); } .ds-row { position: relative; padding: 1.6rem 0; isolation: isolate; transition: opacity .55s cubic-bezier(.16,1,.3,1), padding-left .6s cubic-bezier(.16,1,.3,1); } .ds-rowlist:has(.ds-row:hover) .ds-row:not(:hover) { opacity: .26; } .ds-row:hover { padding-left: 1rem; } .ds-row h3 { font-family: Archivo, Arial, sans-serif; font-size: 1.8rem; font-weight: 700; letter-spacing: -.04em; color: rgba(242,239,233,.64); margin: 0 0 .3rem; transition: color .45s cubic-bezier(.16,1,.3,1), text-shadow .6s cubic-bezier(.16,1,.3,1); } .ds-row:hover h3 { color: #F2EFE9; text-shadow: 0 0 34px rgba(53,224,255,.4); } .ds-row p { font-family: 'Inter Tight', Arial, sans-serif; font-size: .95rem; color: rgba(242,239,233,.4); margin: 0; } .ds-row__rule { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(242,239,233,.1); overflow: hidden; } .ds-row__rule i { position: absolute; inset: 0; background: linear-gradient(100deg, #6C5CFF, #35E0FF 48%, #FF6FB5); transform: scaleX(0); transform-origin: left center; transition: transform .8s cubic-bezier(.16,1,.3,1), box-shadow .6s cubic-bezier(.16,1,.3,1); } .ds-row:hover .ds-row__rule i { transform: scaleX(1); box-shadow: 0 0 14px 1px rgba(53,224,255,.6); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Instrument Panel",
+    "overview": "This is a near-black chamber containing one luminous object and a great deal of calibrated measurement. The interface behaves like precision equipment rather than a brochure: monospace labels carry indices and exact values, the cursor reports its own position in the same normalised coordinate space the shaders consume, status badges distinguish what is shipping from what is being learned, and a scan line sweeps a card once as it arrives and then retires. Nothing decorates. Every readout means something.\n\nThe density is editorial, not dashboard. Display type is set enormous and tight — Archivo at 800 weight with the width axis pulled to 92 and letter-spacing at −0.05em — then given room to breathe against wide gutters and long vertical sections. Between those extremes sits a monospace layer doing the quiet work. The result reads as an engineer's own instrument, built to specification, rather than a template someone filled in.\n\nRestraint is the mechanism. The chrome is monochrome by rule, which is what allows the one saturated element — the iridescent artifact rendered live in WebGL — to carry the entire brand without competition. Remove the colour from everything else and a single object becomes unforgettable; distribute it and nothing is.",
+    "keyCharacteristics": [
+      "Near-black ground with warm off-white ink; three tonal steps, no light counterpart",
+      "One iridescent triad, reserved exclusively for brand; a separate pair reserved exclusively for status",
+      "Enormous tight display type against a monospace data layer",
+      "Hairlines before boxes, glow before shadow",
+      "Motion is scroll-driven and single-clocked; every effect answers to the same time source"
+    ],
+    "rules": [
+      { "name": "The Two Vocabularies Rule", "body": "The iridescent triad means this is the brand. The status pair means this is the state of something. Neither ever does the other's job. A palette where one set does both stops communicating, which is exactly why they were split.", "section": "colors" },
+      { "name": "The Monochrome Chrome Rule", "body": "Interface furniture — nav, rails, rules, cards, type — is greyscale at rest. Saturated colour at rest belongs to the WebGL layer and to status badges only. Everything else earns colour by being hovered, focused, or active.", "section": "colors" },
+      { "name": "The One Italic Rule", "body": "Instrument Serif italic marks exactly one word per section. Used twice in a view it stops being emphasis and becomes texture.", "section": "typography" },
+      { "name": "The Mono-Means-Data Rule", "body": "JetBrains Mono is never decorative. It appears only where the content is genuinely a measurement, an identifier, or a coordinate. If it could be a sentence, it is not mono.", "section": "typography" },
+      { "name": "The Measure Rule", "body": "Running text never exceeds ~68ch, and lead paragraphs sit nearer 56ch. Wide columns get a narrower measure, not a bigger font.", "section": "layout" },
+      { "name": "The Glow-Is-State Rule", "body": "A shadow in this system answers a question about state, not about height. If nothing is being hovered, focused, or reported as live, there is no shadow.", "section": "elevation" },
+      { "name": "The Hairline-First Rule", "body": "Reach for a 1px line at 10% ink before reaching for a border, a box, or a background. Most separation in this system is a single rule.", "section": "elevation" },
+      { "name": "The Radius-Follows-Function Rule", "body": "Round is interactive, 8px is data, 16–22px is architecture, 2px is structural. A tile that becomes a button changes its radius.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep interface chrome monochrome and let the WebGL layer and status badges carry all saturated colour at rest.",
+      "Do separate with a 1px hairline at 10% ink before reaching for a border, a box, or a shadow.",
+      "Do match radius to function — 100px interactive, 8px data, 16–22px architecture, 2px structural.",
+      "Do reserve backdrop-filter blur for surfaces that genuinely float above the page (modal, overlay menu, cursor HUD). It is never the default card treatment.",
+      "Do drive everything scroll-linked through GSAP on the shared Lenis-fed clock, and everything state-linked through CSS or React — the two never touch the same property on the same element.",
+      "Do let panels settle at exactly identity. A card at rest carries no residual rotation or Z, so its type is never rasterised through a 3D matrix while being read.",
+      "Do give every element whose visible state is established by JavaScript a hidden starting state in CSS, so it cannot strand itself when reduced motion suppresses the script."
+    ],
+    "donts": [
+      "Don't build a connected-dots particle-network background. Confirmed rejection: it is the most overused effect in developer portfolios and would undo the point of writing custom shaders.",
+      "Don't let the iridescent triad report status, or let the status pair decorate. The two vocabularies stay separate.",
+      "Don't use more than one Instrument Serif italic word per section.",
+      "Don't set monospace on anything that is not a measurement, identifier, or coordinate.",
+      "Don't animate filter: blur() during scroll — it is the most reliable way to drop frames in this system.",
+      "Don't measure a scroll driver with scrollWidth or 100vw. The first includes overflow created by this system's own transforms; the second includes the scrollbar. Use offsetWidth against documentElement.clientWidth.",
+      "Don't rely on z-index to raise an overlay above the nav from inside .main — it establishes a stacking context at z-index: 2, so overlays must be portalled to <body>.",
+      "Don't hide the native cursor."
+    ]
+  }
+}
