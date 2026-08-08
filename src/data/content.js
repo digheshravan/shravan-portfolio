@@ -187,28 +187,71 @@ export const PROJECTS = [
     ],
   },
   {
-    // Not on the CV but live on GitHub. Copy below is drawn from the repo's own
-    // description — worth expanding once there's more to say about it.
+    // Built professionally, at Tyrannix, during the technical internship — not a
+    // side project. That distinction is the strongest single fact on the site.
     id: '03',
     slug: 'petpal-ai',
     title: 'PetPal AI',
-    kind: 'AI-assisted mobile application',
-    year: '2025',
+    kind: 'AI application · built at Tyrannix',
+    context: 'Technical internship',
+    year: '2026',
     device: 'phone',
     summary:
-      'A Wikipedia-meets-ChatGPT portal for pet parents — reference material and a conversational assistant in one app.',
+      'A pet-care knowledge portal with a conversational assistant that answers from verified articles instead of improvising — built over an eight-week internship.',
     highlights: [
-      'Conversational assistant powered by Google Gemini',
-      'Firebase backend handling auth and data persistence',
-      'Flutter delivers a single codebase across both platforms',
-      'Reference content paired with free-form question answering',
+      'Retrieval-augmented generation over Gemini 2.5 Flash, grounding every answer in 50+ authored articles and citing its sources',
+      'Keyword retrieval on Firestore ranked by relevance and species match, chosen over a vector database the corpus size did not justify',
+      'Nine Firestore collections behind per-domain repository classes, keeping data access out of the presentation layer',
+      'Clean data/domain/presentation layering in Flutter with Riverpod and GoRouter',
+      'Health tracker with weight charts and scheduled vaccination reminders, plus a GPS service directory',
     ],
-    stack: ['Flutter', 'Firebase', 'Google Gemini', 'Dart'],
+    stack: ['Flutter', 'Firebase', 'Gemini 2.5 Flash', 'RAG', 'Riverpod'],
     repo: 'https://github.com/digheshravan/Pet-Care-AI',
     metrics: [
-      { k: 'Model', v: 'Gemini' },
-      { k: 'Backend', v: 'Firebase' },
-      { k: 'Platforms', v: 'iOS · Android' },
+      { k: 'Retrieval', v: 'RAG, cited' },
+      { k: 'Corpus', v: '50+ articles' },
+      { k: 'Collections', v: 'Nine' },
+    ],
+  },
+]
+
+/**
+ * Professional experience. Sourced from the Technical Internship Program report
+ * — every line here is in that document.
+ *
+ * Two things deliberately absent: no individual is named, and nothing describes
+ * the employer's internal business strategy or any unresolved issue in a product
+ * that is still theirs. Both are the owner's decisions, recorded in PRODUCT.md.
+ */
+export const EXPERIENCE = [
+  {
+    id: '01',
+    role: 'Flutter Developer',
+    org: 'Tyrannix Pvt. Ltd.',
+    orgNote: 'A Mumbai startup studio that designs and ships its own digital products.',
+    kind: 'Technical Internship',
+    period: 'May — July 2026',
+    duration: '8 weeks',
+    location: 'Mumbai, India',
+    project: 'PetPal AI',
+    summary:
+      'Designed and built PetPal AI — a pet-care knowledge portal with a conversational assistant grounded in verified articles rather than left to improvise.',
+    highlights: [
+      'Shipped a retrieval-augmented generation pipeline over Google Gemini 2.5 Flash, grounding every answer in 50+ authored articles and citing its sources',
+      'Chose keyword retrieval on Firestore, ranked by relevance and species match, over introducing a vector database — the accuracy at this corpus size did not justify the extra infrastructure',
+      'Modelled nine Firestore collections behind per-domain repository classes, keeping data access out of the presentation layer',
+      'Structured the Flutter app in clean data, domain and presentation layers with Riverpod state management and GoRouter navigation',
+      'Built pet profiles, a health tracker with weight charts and scheduled vaccination reminders, and a GPS service directory with distance sorting',
+    ],
+    stack: [
+      'Flutter',
+      'Dart',
+      'Firebase',
+      'Cloud Firestore',
+      'Gemini 2.5 Flash',
+      'RAG',
+      'Riverpod',
+      'Material 3',
     ],
   },
 ]

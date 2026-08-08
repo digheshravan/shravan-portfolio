@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
-import { EDUCATION, RECOGNITION } from '../data/content'
+import { EXPERIENCE, EDUCATION, RECOGNITION } from '../data/content'
 import { SectionHead } from '../components/SectionHead'
 import { Reveal } from '../components/Reveal'
 
@@ -71,6 +71,18 @@ export function Journey() {
       })
 
       gsap.fromTo(
+        '.xp',
+        { y: 48, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: 'out-expo',
+          scrollTrigger: { trigger: '.xpList', start: 'top 84%', once: true },
+        }
+      )
+
+      gsap.fromTo(
         '.award',
         { y: 60, opacity: 0 },
         {
@@ -92,9 +104,59 @@ export function Journey() {
       <SectionHead
         index="05"
         label="Path"
-        title="How I got here"
+        title="Where I've worked, and how I got here"
         note="Diploma first, degree second — hands on the keyboard before theory."
       />
+
+      {/* Experience leads. A recruiter scanning this section is looking for
+          employment before schooling, and putting education first would bury
+          the strongest fact on the page under three rows of institutions. */}
+      <div className="xpList">
+        {EXPERIENCE.map((job) => (
+          <article className="xp" key={job.id}>
+            <div className="xp__aside">
+              <span className="xp__period mono">{job.period}</span>
+              <span className="xp__duration mono">{job.duration}</span>
+              <span className="xp__place mono">{job.location}</span>
+            </div>
+
+            <div className="xp__main">
+              <div className="xp__topline">
+                <h3 className="xp__role">
+                  {job.role} <em>at</em> {job.org}
+                </h3>
+                <span className="pill pill--live">{job.kind}</span>
+              </div>
+
+              <p className="xp__org">{job.orgNote}</p>
+              <p className="xp__summary">{job.summary}</p>
+
+              <ul className="xp__points">
+                {job.highlights.map((h) => (
+                  <li key={h}>
+                    <i aria-hidden="true" />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="xp__stack">
+                {job.stack.map((s) => (
+                  <span className="chip" key={s}>
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <h3 className="pathHeading">
+        <Reveal mode="word" stagger={0.05}>
+          Education
+        </Reveal>
+      </h3>
 
       <div className="timeline">
         <div className="timeline__spine" aria-hidden="true">
