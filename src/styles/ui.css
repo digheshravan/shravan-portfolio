@@ -821,21 +821,25 @@ button,
   color: var(--fg);
 }
 
+/* Grows by scaleX rather than width: identical result, composited instead of
+   laying out on every frame. Origin is the right edge because the rail is
+   right-aligned, so the tick still extends leftward. */
 .rail__tick {
   display: block;
   width: 16px;
   height: 1px;
   background: var(--mark);
-  transition: width 0.55s var(--e-out), background-color 0.45s var(--e-out);
+  transform-origin: right center;
+  transition: transform 0.55s var(--e-out), background-color 0.45s var(--e-out);
 }
 
 .rail__item:hover .rail__tick {
-  width: 26px;
+  transform: scaleX(1.625);
   background: var(--fg-2);
 }
 
 .rail__item.is-active .rail__tick {
-  width: 34px;
+  transform: scaleX(2.125);
   background: var(--fg);
 }
 

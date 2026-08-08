@@ -482,12 +482,28 @@
   align-items: start;
   gap: clamp(1.2rem, 3vw, 3.5rem);
   padding: clamp(1.8rem, 3.4vw, 2.9rem) 0;
-  padding-left: 0;
   /* isolate guarantees the ::before wash stays behind this row's own text
      rather than slipping behind the section. */
   isolation: isolate;
-  transition: opacity 0.55s var(--e-out), padding-left 0.6s var(--e-out);
+  transition: opacity 0.55s var(--e-out);
   will-change: transform, opacity;
+}
+
+/* The indent is applied to the row's children rather than as padding on the
+   row: padding lays out every frame, and the row itself cannot take a CSS
+   transform because GSAP writes an inline one there during the reveal. The
+   ::before wash and ::after accent bar stay anchored to the gutter, which is
+   the point — the content advances away from the bar. */
+.skillRow__head,
+.skillRow__meta,
+.skillRow__count {
+  transition: transform 0.6s var(--e-out);
+}
+
+.skillRow:hover .skillRow__head,
+.skillRow:hover .skillRow__meta,
+.skillRow:hover .skillRow__count {
+  transform: translateX(clamp(0.7rem, 1.6vw, 1.5rem));
 }
 
 /* The lit panel behind the hovered row. Bleeds into the gutter so the
@@ -532,9 +548,6 @@
   transform: scaleY(1);
 }
 
-.skillRow:hover {
-  padding-left: clamp(0.7rem, 1.6vw, 1.5rem);
-}
 
 /* Sibling dimming without a line of JavaScript. Hovering one row quietens the
    others so the list reads as a focus, not as four competing blocks. */
@@ -1720,12 +1733,19 @@ html.modal-open body {
   gap: 1.5rem;
   padding: clamp(1.1rem, 2.2vw, 1.6rem) 0;
   border-bottom: 1px solid var(--line);
-  transition: padding 0.6s var(--e-out);
   will-change: transform, opacity;
 }
 
-.contact__row:hover {
-  padding-left: 1rem;
+/* Same reasoning as the skill rows: the indent rides on the children, because
+   padding lays out every frame and the row carries a GSAP inline transform. */
+.contact__rowLabel,
+.contact__rowValue {
+  transition: transform 0.6s var(--e-out);
+}
+
+.contact__row:hover .contact__rowLabel,
+.contact__row:hover .contact__rowValue {
+  transform: translateX(1rem);
 }
 
 .contact__rowLabel {
