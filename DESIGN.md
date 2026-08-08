@@ -7,8 +7,9 @@ colors:
   ground-lift: "#121219"
   ink: "#F2EFE9"
   ink-muted: "rgba(242, 239, 233, 0.64)"
-  ink-quiet: "rgba(242, 239, 233, 0.40)"
-  ink-faint: "rgba(242, 239, 233, 0.22)"
+  ink-quiet: "rgba(242, 239, 233, 0.56)"
+  ink-faint: "rgba(242, 239, 233, 0.50)"
+  mark: "rgba(242, 239, 233, 0.22)"
   hairline: "rgba(242, 239, 233, 0.10)"
   hairline-strong: "rgba(242, 239, 233, 0.18)"
   signal-violet: "#6C5CFF"
@@ -44,10 +45,10 @@ typography:
     letterSpacing: "normal"
   label:
     fontFamily: "'JetBrains Mono', ui-monospace, monospace"
-    fontSize: "0.62rem"
+    fontSize: "clamp(0.62rem, 0.72vw, 0.75rem)"
     fontWeight: 400
     lineHeight: 1.4
-    letterSpacing: "0.16em"
+    letterSpacing: "0.14em"
   accent:
     fontFamily: "'Instrument Serif', Georgia, serif"
     fontSize: "1.1em"
@@ -146,7 +147,8 @@ A monochrome instrument lit by one iridescent source, with a strictly separate p
 - **Ground** (`#08080A`): The page. Near-black with a blue bias, never pure `#000`.
 - **Ground Soft** (`#0D0D12`) and **Ground Lift** (`#121219`): The two raised tones. This is how surfaces separate — by tone, not by shadow.
 - **Ink** (`#F2EFE9`): Warm off-white. Headlines, primary text, and the fill of primary buttons.
-- **Ink Muted** (64%), **Ink Quiet** (40%), **Ink Faint** (22%): The descending text ramp — supporting copy, tertiary copy, and mono labels respectively.
+- **Ink Muted** (64%), **Ink Quiet** (56%), **Ink Faint** (50%): The descending text ramp — supporting copy, tertiary copy, and mono labels respectively. The bottom of this ramp is compressed on purpose: `0.485` is the lowest alpha that clears 4.5:1 on this ground, so four widely-spaced legible tiers of one hue do not exist here. Legibility won.
+- **Mark** (22%): Faint decorative marks only — separator dots, rail ticks, the outline marquee stroke. Never text.
 - **Hairline** (10%) and **Hairline Strong** (18%): Separation and control borders.
 
 ### Named Rules
@@ -165,6 +167,8 @@ A monochrome instrument lit by one iridescent source, with a strictly separate p
 **Character:** A hard, tightly-tracked grotesk doing the shouting, a narrow humanist doing the talking, and a monospace doing the measuring — with one italic serif allowed in as the single moment of warmth. Four faces, four jobs, no overlap.
 
 ### Hierarchy
+
+The six roles below name the system's *voices*, not an enumerated size list. Sizes are fluid `clamp()` expressions tuned per component, so a token that appears in one component at `clamp(1.3rem, 2.2vw, 1.85rem)` may appear in a denser one a step tighter. The invariants are the family, the weight, the tracking direction, and the role — not a fixed scale. A linter comparing literal sizes against this section will report drift that is not drift.
 
 - **Display** (800, `clamp(3.1rem, 14.4vw, 13.5rem)`, line-height 0.82, `wdth` 92): The name in the hero, set per-glyph in overflow-hidden masks so it can be revealed letter by letter. Once per page.
 - **Headline** (800, `clamp(2.4rem, 7vw, 5rem)`, line-height 0.98): Case-study and modal titles.

@@ -11,8 +11,16 @@
   /* Ink */
   --fg: #f2efe9;
   --fg-2: rgba(242, 239, 233, 0.64);
-  --fg-3: rgba(242, 239, 233, 0.4);
-  --fg-4: rgba(242, 239, 233, 0.22);
+  /* Both tiers clear 4.5:1 against the ground. The minimum alpha that does so
+     is 0.485, which is why the old 0.40 and 0.22 failed at 3.41:1 and 1.79:1 —
+     on a ground this dark, four legible tiers of one hue do not exist. */
+  --fg-3: rgba(242, 239, 233, 0.56);
+  --fg-4: rgba(242, 239, 233, 0.5);
+
+  /* Faint decorative marks: separator dots, rail ticks, outline strokes. This
+     was --fg-4's second job, and it is why that token could not simply be
+     raised — legible text and a 3px dot want opposite values. */
+  --mark: rgba(242, 239, 233, 0.22);
 
   /* Structure */
   --line: rgba(242, 239, 233, 0.1);
@@ -139,7 +147,7 @@ ol {
 
 ::selection {
   background: var(--vio);
-  color: #fff;
+  color: var(--fg);
 }
 
 /* Keep the real scrollbar — people use it to drag, and removing it costs more
@@ -230,13 +238,6 @@ h4 {
   }
 }
 
-/* Gradient ink, used sparingly on single words. */
-.iri-text {
-  background: var(--iri);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
 
 /* --------------------------------------------------------------------------
    Reveal primitive (see components/Reveal.jsx)
