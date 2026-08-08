@@ -26,6 +26,7 @@ button,
   .cursor {
     display: none;
   }
+
 }
 
 .cursor__reticle,
@@ -712,7 +713,7 @@ button,
 
 .marquee--outline .marquee__item {
   color: transparent;
-  -webkit-text-stroke: 1px var(--fg-4);
+  -webkit-text-stroke: 1px var(--mark);
   font-weight: 500;
 }
 
@@ -824,7 +825,7 @@ button,
   display: block;
   width: 16px;
   height: 1px;
-  background: var(--fg-4);
+  background: var(--mark);
   transition: width 0.55s var(--e-out), background-color 0.45s var(--e-out);
 }
 

@@ -865,7 +865,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--fg-4);
+  background: var(--mark);
 }
 
 .pcard__title {
@@ -1114,7 +1114,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--fg-4);
+  background: var(--mark);
 }
 
 .pmodal__title {
@@ -1807,5 +1807,39 @@ html.modal-open body {
 
   .contact__rowArrow {
     grid-area: arrow;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tap targets
+   Last in the cascade on purpose. These controls are defined across ui.css and
+   sections.css, so an equal-specificity rule placed earlier loses to them —
+   the burger and the copy button both stayed at their original size when this
+   block lived at the top of ui.css.
+   -------------------------------------------------------------------------- */
+
+@media (pointer: coarse) {
+  /* Every one of these measured between 15px and 42px tall on a phone —
+     legible, but not reliably hittable. The padding grows the reachable area
+     without moving the type, so pointer devices see no change at all. */
+  .nav__brand a {
+    padding-block: 0.7rem;
+  }
+
+  /* min-height rather than padding: the padding maths depends on each control's
+     line-height and box model, and two of these landed at 32px and 42px when it
+     was computed that way. A floor is deterministic. */
+  .menu__foot a,
+  .hero__cue,
+  .contact__mail,
+  .contact__copy {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .nav__burger {
+    width: 46px;
+    height: 46px;
   }
 }

@@ -8,74 +8,228 @@
         "role": "primary",
         "displayName": "Signal Violet",
         "canonical": "#6C5CFF",
-        "tonalRamp": ["#100D26", "#1C1747", "#2B2270", "#3D309C", "#5245C8", "#6C5CFF", "#9086FF", "#C3BDFF"]
+        "tonalRamp": [
+          "#100D26",
+          "#1C1747",
+          "#2B2270",
+          "#3D309C",
+          "#5245C8",
+          "#6C5CFF",
+          "#9086FF",
+          "#C3BDFF"
+        ]
       },
       "instrument-cyan": {
         "role": "primary",
         "displayName": "Instrument Cyan",
         "canonical": "#35E0FF",
-        "tonalRamp": ["#04222A", "#073B49", "#0A5A6E", "#0E7D99", "#1BA6C9", "#35E0FF", "#7BEBFF", "#BFF5FF"]
+        "tonalRamp": [
+          "#04222A",
+          "#073B49",
+          "#0A5A6E",
+          "#0E7D99",
+          "#1BA6C9",
+          "#35E0FF",
+          "#7BEBFF",
+          "#BFF5FF"
+        ]
       },
       "readout-rose": {
         "role": "tertiary",
         "displayName": "Readout Rose",
         "canonical": "#FF6FB5",
-        "tonalRamp": ["#2B0A1C", "#48122E", "#6D1C45", "#96285E", "#C43C7C", "#FF6FB5", "#FFA0CE", "#FFD0E6"]
+        "tonalRamp": [
+          "#2B0A1C",
+          "#48122E",
+          "#6D1C45",
+          "#96285E",
+          "#C43C7C",
+          "#FF6FB5",
+          "#FFA0CE",
+          "#FFD0E6"
+        ]
       },
       "status-live": {
         "role": "secondary",
         "displayName": "Status Live",
         "canonical": "#3ECF8E",
-        "tonalRamp": ["#062316", "#093B26", "#0D5938", "#12794D", "#219E68", "#3ECF8E", "#7CE1B4", "#BDF0D9"]
+        "tonalRamp": [
+          "#062316",
+          "#093B26",
+          "#0D5938",
+          "#12794D",
+          "#219E68",
+          "#3ECF8E",
+          "#7CE1B4",
+          "#BDF0D9"
+        ]
       },
       "status-learning": {
         "role": "secondary",
         "displayName": "Status Learning",
         "canonical": "#F5A524",
-        "tonalRamp": ["#2A1B03", "#472D05", "#6B4408", "#945D0B", "#C27B10", "#F5A524", "#F9C46E", "#FCE1B6"]
+        "tonalRamp": [
+          "#2A1B03",
+          "#472D05",
+          "#6B4408",
+          "#945D0B",
+          "#C27B10",
+          "#F5A524",
+          "#F9C46E",
+          "#FCE1B6"
+        ]
       },
       "ground": {
         "role": "neutral",
         "displayName": "Ground",
         "canonical": "#08080A",
-        "tonalRamp": ["#08080A", "#0D0D12", "#121219", "#1B1B24", "#2A2A36", "#4A4A5A", "#8C8C99", "#F2EFE9"]
+        "tonalRamp": [
+          "#08080A",
+          "#0D0D12",
+          "#121219",
+          "#1B1B24",
+          "#2A2A36",
+          "#4A4A5A",
+          "#8C8C99",
+          "#F2EFE9"
+        ]
       },
       "ink": {
         "role": "neutral",
         "displayName": "Ink",
         "canonical": "#F2EFE9",
-        "tonalRamp": ["#1A1917", "#312F2C", "#4C4945", "#6B6862", "#8E8A83", "#B4AFA7", "#D6D1CA", "#F2EFE9"]
+        "tonalRamp": [
+          "#1A1917",
+          "#312F2C",
+          "#4C4945",
+          "#6B6862",
+          "#8E8A83",
+          "#B4AFA7",
+          "#D6D1CA",
+          "#F2EFE9"
+        ]
+      },
+      "mark": {
+        "role": "neutral",
+        "displayName": "Mark",
+        "canonical": "rgba(242, 239, 233, 0.22)",
+        "tonalRamp": [
+          "#0E0E10",
+          "#1A1A1D",
+          "#26262A",
+          "#333338",
+          "#414146",
+          "#5A5A61",
+          "#8A8A93",
+          "#B4B4BC"
+        ]
       }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "The name in the hero, revealed glyph by glyph from overflow-hidden masks. Once per page." },
-      "headline": { "displayName": "Headline", "purpose": "Case-study and modal titles." },
-      "title": { "displayName": "Title", "purpose": "Section headlines, pillar titles, card titles." },
-      "body": { "displayName": "Body", "purpose": "Running text, held to a 46-68ch measure." },
-      "label": { "displayName": "Label", "purpose": "Indices, kickers, metadata, stack names, coordinates. Never decorative." },
-      "accent": { "displayName": "Accent Serif", "purpose": "Exactly one emphasised word per section, italic only." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name in the hero, revealed glyph by glyph from overflow-hidden masks. Once per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Case-study and modal titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section headlines, pillar titles, card titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, held to a 46-68ch measure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Indices, kickers, metadata, stack names, coordinates. Never decorative."
+      },
+      "accent": {
+        "displayName": "Accent Serif",
+        "purpose": "Exactly one emphasised word per section, italic only."
+      }
     },
     "shadows": [
-      { "name": "stage-lift", "value": "0 40px 120px -50px rgba(0, 0, 0, 0.9)", "purpose": "The project card, and only the project card. Sinks it into the page rather than lifting it off." },
-      { "name": "focus-glow", "value": "0 8px 22px -10px rgba(53, 224, 255, 0.65)", "purpose": "Token tiles lifting on hover." },
-      { "name": "edge-glow", "value": "0 0 14px 1px rgba(53, 224, 255, 0.6)", "purpose": "The rule beneath an active skill row as it fills." },
-      { "name": "live-pulse", "value": "0 0 0 4px rgba(62, 207, 142, 0)", "purpose": "Animated ring on a Shipping status dot, 2.6s cycle." }
+      {
+        "name": "stage-lift",
+        "value": "0 40px 120px -50px rgba(0, 0, 0, 0.9)",
+        "purpose": "The project card, and only the project card. Sinks it into the page rather than lifting it off."
+      },
+      {
+        "name": "focus-glow",
+        "value": "0 8px 22px -10px rgba(53, 224, 255, 0.65)",
+        "purpose": "Token tiles lifting on hover."
+      },
+      {
+        "name": "edge-glow",
+        "value": "0 0 14px 1px rgba(53, 224, 255, 0.6)",
+        "purpose": "The rule beneath an active skill row as it fills."
+      },
+      {
+        "name": "live-pulse",
+        "value": "0 0 0 4px rgba(62, 207, 142, 0)",
+        "purpose": "Animated ring on a Shipping status dot, 2.6s cycle."
+      }
     ],
     "motion": [
-      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Default easing for every entrance, hover and settle. The house curve." },
-      { "name": "ease-inout", "value": "cubic-bezier(0.83, 0, 0.17, 1)", "purpose": "Symmetric moves: curtain wipes, clip-path reveals, ambient pulses." },
-      { "name": "duration-fast", "value": "180ms", "purpose": "Tool-like responses that must feel instant." },
-      { "name": "duration-base", "value": "450ms", "purpose": "Standard hover and state resolution." },
-      { "name": "duration-slow", "value": "900ms", "purpose": "Entrances and scroll-driven reveals." },
-      { "name": "lenis-lerp", "value": "0.085", "purpose": "Smooth-scroll damping. Lerp rather than duration, so rapid wheel ticks do not interrupt each other." }
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default easing for every entrance, hover and settle. The house curve."
+      },
+      {
+        "name": "ease-inout",
+        "value": "cubic-bezier(0.83, 0, 0.17, 1)",
+        "purpose": "Symmetric moves: curtain wipes, clip-path reveals, ambient pulses."
+      },
+      {
+        "name": "duration-fast",
+        "value": "180ms",
+        "purpose": "Tool-like responses that must feel instant."
+      },
+      {
+        "name": "duration-base",
+        "value": "450ms",
+        "purpose": "Standard hover and state resolution."
+      },
+      {
+        "name": "duration-slow",
+        "value": "900ms",
+        "purpose": "Entrances and scroll-driven reveals."
+      },
+      {
+        "name": "lenis-lerp",
+        "value": "0.085",
+        "purpose": "Smooth-scroll damping. Lerp rather than duration, so rapid wheel ticks do not interrupt each other."
+      }
     ],
     "breakpoints": [
-      { "name": "xs", "value": "620px" },
-      { "name": "sm", "value": "900px" },
-      { "name": "md", "value": "980px" },
-      { "name": "lg", "value": "1100px" },
-      { "name": "xl", "value": "1240px" },
-      { "name": "short", "value": "780px (height)" }
+      {
+        "name": "xs",
+        "value": "620px"
+      },
+      {
+        "name": "sm",
+        "value": "900px"
+      },
+      {
+        "name": "md",
+        "value": "980px"
+      },
+      {
+        "name": "lg",
+        "value": "1100px"
+      },
+      {
+        "name": "xl",
+        "value": "1240px"
+      },
+      {
+        "name": "short",
+        "value": "780px (height)"
+      }
     ]
   },
   "components": [
@@ -155,14 +309,51 @@
       "Motion is scroll-driven and single-clocked; every effect answers to the same time source"
     ],
     "rules": [
-      { "name": "The Two Vocabularies Rule", "body": "The iridescent triad means this is the brand. The status pair means this is the state of something. Neither ever does the other's job. A palette where one set does both stops communicating, which is exactly why they were split.", "section": "colors" },
-      { "name": "The Monochrome Chrome Rule", "body": "Interface furniture — nav, rails, rules, cards, type — is greyscale at rest. Saturated colour at rest belongs to the WebGL layer and to status badges only. Everything else earns colour by being hovered, focused, or active.", "section": "colors" },
-      { "name": "The One Italic Rule", "body": "Instrument Serif italic marks exactly one word per section. Used twice in a view it stops being emphasis and becomes texture.", "section": "typography" },
-      { "name": "The Mono-Means-Data Rule", "body": "JetBrains Mono is never decorative. It appears only where the content is genuinely a measurement, an identifier, or a coordinate. If it could be a sentence, it is not mono.", "section": "typography" },
-      { "name": "The Measure Rule", "body": "Running text never exceeds ~68ch, and lead paragraphs sit nearer 56ch. Wide columns get a narrower measure, not a bigger font.", "section": "layout" },
-      { "name": "The Glow-Is-State Rule", "body": "A shadow in this system answers a question about state, not about height. If nothing is being hovered, focused, or reported as live, there is no shadow.", "section": "elevation" },
-      { "name": "The Hairline-First Rule", "body": "Reach for a 1px line at 10% ink before reaching for a border, a box, or a background. Most separation in this system is a single rule.", "section": "elevation" },
-      { "name": "The Radius-Follows-Function Rule", "body": "Round is interactive, 8px is data, 16–22px is architecture, 2px is structural. A tile that becomes a button changes its radius.", "section": "shapes" }
+      {
+        "name": "The Two Vocabularies Rule",
+        "body": "The iridescent triad means this is the brand. The status pair means this is the state of something. Neither ever does the other's job. A palette where one set does both stops communicating, which is exactly why they were split.",
+        "section": "colors"
+      },
+      {
+        "name": "The Monochrome Chrome Rule",
+        "body": "Interface furniture — nav, rails, rules, cards, type — is greyscale at rest. Saturated colour at rest belongs to the WebGL layer and to status badges only. Everything else earns colour by being hovered, focused, or active.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Italic Rule",
+        "body": "Instrument Serif italic marks exactly one word per section. Used twice in a view it stops being emphasis and becomes texture.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-Means-Data Rule",
+        "body": "JetBrains Mono is never decorative. It appears only where the content is genuinely a measurement, an identifier, or a coordinate. If it could be a sentence, it is not mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Measure Rule",
+        "body": "Running text never exceeds ~68ch, and lead paragraphs sit nearer 56ch. Wide columns get a narrower measure, not a bigger font.",
+        "section": "layout"
+      },
+      {
+        "name": "The Glow-Is-State Rule",
+        "body": "A shadow in this system answers a question about state, not about height. If nothing is being hovered, focused, or reported as live, there is no shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Hairline-First Rule",
+        "body": "Reach for a 1px line at 10% ink before reaching for a border, a box, or a background. Most separation in this system is a single rule.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Radius-Follows-Function Rule",
+        "body": "Round is interactive, 8px is data, 16–22px is architecture, 2px is structural. A tile that becomes a button changes its radius.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Legibility-Over-Ladder Rule",
+        "body": "0.485 is the lowest alpha that clears 4.5:1 on this ground, so the bottom of the text ramp is compressed rather than spread. Where a tier and a decorative mark wanted opposite values, they were split into separate tokens instead of compromising on one.",
+        "section": "colors"
+      }
     ],
     "dos": [
       "Do keep interface chrome monochrome and let the WebGL layer and status badges carry all saturated colour at rest.",
@@ -181,7 +372,8 @@
       "Don't animate filter: blur() during scroll — it is the most reliable way to drop frames in this system.",
       "Don't measure a scroll driver with scrollWidth or 100vw. The first includes overflow created by this system's own transforms; the second includes the scrollbar. Use offsetWidth against documentElement.clientWidth.",
       "Don't rely on z-index to raise an overlay above the nav from inside .main — it establishes a stacking context at z-index: 2, so overlays must be portalled to <body>.",
-      "Don't hide the native cursor."
+      "Don't hide the native cursor.",
+      "Don't use --mark for text. It sits at 22% and fails contrast by design; it exists for separator dots, rail ticks, and the outline marquee only."
     ]
   }
 }
