@@ -638,11 +638,14 @@ button,
 
 .sectionHead__index {
   color: var(--fg);
+  flex: 0 0 auto;
 }
 
+/* Reads as the index's own trailing stroke rather than a separator between two
+   labels, now that there is only one thing on this line to separate from. */
 .sectionHead__rule {
   flex: 1;
-  max-width: 90px;
+  max-width: 160px;
   height: 1px;
   background: var(--line-2);
 }

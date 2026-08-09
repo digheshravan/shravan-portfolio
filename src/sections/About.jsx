@@ -72,7 +72,7 @@ export function About() {
 
   return (
     <section className="section about" id="about" ref={root} data-panel>
-      <SectionHead index="02" label="About" title="The short version" />
+      <SectionHead index="02" title="The short version" />
 
       <div className="about__statement">
         <p className="about__text">

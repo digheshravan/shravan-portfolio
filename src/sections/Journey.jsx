@@ -103,7 +103,6 @@ export function Journey() {
     <section className="section journey" id="journey" ref={root} data-panel>
       <SectionHead
         index="05"
-        label="Path"
         title="Where I've worked, and how I got here"
         note="Diploma first, degree second — hands on the keyboard before theory."
       />

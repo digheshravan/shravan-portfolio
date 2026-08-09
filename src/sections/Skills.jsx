@@ -41,7 +41,6 @@ export function Skills() {
     <section className="section skills" id="skills" ref={root} data-panel>
       <SectionHead
         index="03"
-        label="Craft"
         title="What I build with"
         note="Grouped by what I can be handed, not by what I have read about."
       />

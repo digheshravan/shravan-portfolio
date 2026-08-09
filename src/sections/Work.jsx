@@ -176,7 +176,6 @@ export function Work() {
     <section className="section work" id="work" ref={root}>
       <SectionHead
         index="04"
-        label="Work"
         title="Three products, end to end"
         note="Scroll sideways. Tap any one to open the full story."
       />

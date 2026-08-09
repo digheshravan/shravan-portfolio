@@ -52,7 +52,6 @@ export function Focus() {
     <section className="section focus" id="focus" ref={root} data-panel>
       <SectionHead
         index="01"
-        label="Focus"
         title="Four fronts, one engineer"
         note="Two of these are shipping today. Two are where I am taking the work next — marked honestly, because the difference matters."
       />
