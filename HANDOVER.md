@@ -1,14 +1,14 @@
 # Handover — moving from Windows to MacBook
 
-<!-- Created 2026-08-15. Update this file whenever you change machines or hand
-     the project to someone else — it's meant to stay current, not be a
-     one-time snapshot. -->
+<!-- Created 2026-08-15, last re-verified 2026-08-16. Update this file whenever
+     you change machines or hand the project to someone else — it's meant to
+     stay current, not be a one-time snapshot. -->
 
 ## Status right now
 
 - **Repo:** [github.com/digheshravan/shravan-portfolio](https://github.com/digheshravan/shravan-portfolio) — **public**, `main` branch.
 - **Deployed:** [shravandige.dev](https://shravandige.dev), via Vercel, auto-deploys on every push to `main`.
-- **Verified before writing this file:** `git fetch origin` then `git status` showed `main` and `origin/main` in sync, and `git push` returned "Everything up-to-date". Every commit from this machine is already on GitHub — there was nothing new to push.
+- **Re-verified 2026-08-16:** `git fetch origin`, then `git status -sb` showed `main` and `origin/main` in sync, `git log origin/main..HEAD` returned nothing (no unpushed commits), and `git diff --stat HEAD` returned nothing (no uncommitted changes to any tracked file). **Everything is on GitHub. There was nothing to commit or push.**
 - **Tracked files:** 55, including all source, `docs/adr/*` (9 architecture decisions), `DESIGN.md`, `PRODUCT.md`, and the résumé at `public/Shravan-Dige-CV.pdf`.
 
 ## Getting running on the MacBook
@@ -34,31 +34,24 @@ That's the whole setup — no `.env` file, no secrets, no platform-specific inst
 
 Net: this is a static Vite/React app with zero OS-coupling. It will run on the Mac exactly as it does here.
 
-## Files ignored by git — what exists locally right now
+## Everything not on GitHub — the complete list
 
-These are on this Windows machine but **not in the GitHub repo**, so `git clone` on the Mac will not bring them. Verified via `git status --ignored`, not from memory.
+Two different reasons something can be missing from the repo: git is told to ignore it (`.gitignore`), or it was never part of the portfolio to begin with (Claude Code tooling installs). Either way, `git clone` on the Mac will **not** bring it. Sizes below are exact byte counts taken directly off this machine, not estimates.
 
-| Path | Size | What it is | Bring it to the Mac? |
+| Path | Size | Why it's not on GitHub | Bring it to the Mac? |
 |---|---|---|---|
-| `node_modules/` | 220M | Installed dependencies | **No** — `npm install` regenerates it, and doing so is what gets you macOS-native binaries instead of Windows ones. |
-| `dist/` | 1.5M | Production build output | **No** — `npm run build` regenerates it. |
-| `Shravan_CV 1.pdf` | 116K | Source file the résumé was made from | **Yes, if you still edit from it.** The file the *site* actually serves is `public/Shravan-Dige-CV.pdf`, which is tracked and will arrive with the clone. This one carries a phone number, which is why it's deliberately kept out of the public repo. |
-| `N130 Shravan Dige Final Report TIP.pdf` | 1.1M | Tyrannix internship report | **Yes, if you'll reference it again** — it's the source material `PRODUCT.md`'s Experience section was written from. Contains a former employer's internal strategy, mentor names, your SAP/roll numbers, and an unresolved security item in a still-live product, which is exactly why it's gitignored rather than published. |
-| `.claude/settings.local.json` | 4K | Local Claude Code settings | No — machine-specific, regenerate as needed. |
-| `.impeccable/config.local.json` | 1K | Local config for the impeccable design skill | No — regenerates on first use. |
-| `.impeccable/hook.cache.json` | 4K | Cache for the design-review git hook | No — regenerates automatically. |
+| `node_modules/` | ~202 MB | `.gitignore` — dependencies | **No.** `npm install` regenerates it and gets you macOS-native binaries instead of Windows ones. Copying it across would actively break things. |
+| `dist/` | 1.5 MB | `.gitignore` — build output | **No.** `npm run build` regenerates it. |
+| `Shravan_CV 1.pdf` | 112 KB | `.gitignore` — carries a phone number | **Yes, if you still edit from it.** The file the *site* serves is `public/Shravan-Dige-CV.pdf`, which is tracked and arrives with the clone — this is only the source it was made from. |
+| `N130 Shravan Dige Final Report TIP.pdf` | 1.1 MB | `.gitignore` — employer strategy, mentor names, SAP/roll numbers, an unresolved security item in a still-live product | **Yes, if you'll reference it again** — it's the source material `PRODUCT.md`'s Experience section was written from. |
+| `.claude/settings.local.json` | 1.2 KB | `.gitignore` — machine-local settings | No — regenerate as needed. |
+| `.impeccable/config.local.json` | 46 B | `.gitignore` — local skill config | No — regenerates on first use. |
+| `.impeccable/hook.cache.json` | 2 KB | `.gitignore` — design-hook cache | No — regenerates automatically. |
+| `.claude/skills/impeccable/` | 2.9 MB, 147 files | Never part of the repo — Claude Code tooling, not portfolio source | **No — reinstall, don't copy.** It's the local install of the Impeccable design-review skill used this session for `document`, `polish`, and the section-head cleanup. |
+| `.agents/skills/web-design-guidelines/` | 1.2 KB | Same as above | **No — reinstall.** Sourced from `vercel-labs/agent-skills` on GitHub per `skills-lock.json`. |
+| `skills-lock.json` | 298 B | Same as above | Only if you want a record of what to reinstall — it's the lockfile for the item above, not something to run. |
 
-**Practical move:** copy the two PDFs by hand (AirDrop, USB, cloud drive — whatever you'd normally use) if you still need them as source material. Everything else in that table should simply be regenerated on the new machine, not copied.
-
-## Not part of the portfolio repo at all
-
-Three more things are untracked, but deliberately **outside** `.gitignore`'s job — they were never candidates for this repo in the first place, so I left them alone rather than adding ignore rules for them:
-
-- **`.claude/skills/impeccable/`** (147 files, 3.3M) — the local install of the Impeccable design-review skill, used this session for `document`, `polish`, and the section-head cleanup.
-- **`.agents/skills/web-design-guidelines/SKILL.md`** — another installed skill (from `vercel-labs/agent-skills`).
-- **`skills-lock.json`** — the lockfile tracking that second install.
-
-These are Claude Code tooling, not portfolio source — a public portfolio repo isn't the right home for someone else's skill-package internals. If you want them on the Mac, reinstall them there through whatever command installed them here (the lockfile records the source as `vercel-labs/agent-skills` on GitHub), rather than copying the raw files across.
+**What that means in practice:** the only things worth physically carrying over (AirDrop, USB, cloud drive) are the two PDFs, and only if you still need them as working documents — everything else on this list is either regenerated automatically (`node_modules`, `dist`, the local config/cache files) or should be reinstalled fresh rather than copied (the two skill tooling directories). Nothing on this list is required for the site itself to build, run, or deploy; all of that lives in the 55 tracked files that already came across in the clone.
 
 ## One thing to actually do, not just carry over
 
