@@ -53,7 +53,7 @@ export function Focus() {
       <SectionHead
         index="01"
         title="Four fronts, one engineer"
-        note="Two of these are shipping today. Two are where I am taking the work next — marked honestly, because the difference matters."
+        note="Three of these are shipping today. One — the data and finance side of the MBA Tech degree — is newer, and marked honestly because the difference matters."
       />
 
       <div className="focus__grid">

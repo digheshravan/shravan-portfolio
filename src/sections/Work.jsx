@@ -3,9 +3,16 @@ import { gsap, ScrollTrigger } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
 import { PROJECTS, PROFILE } from '../data/content'
 import { SectionHead } from '../components/SectionHead'
-import { PhoneMock, BrowserMock } from '../components/DeviceMock'
+import { PhoneMock, BrowserMock, DocMock, RiskMock } from '../components/DeviceMock'
 import { ProjectModal } from '../components/ProjectModal'
 import { Magnetic } from '../components/Magnetic'
+
+const DEVICE_MOCKS = {
+  phone: PhoneMock,
+  browser: BrowserMock,
+  docmind: DocMock,
+  riskdecoder: RiskMock,
+}
 
 export function Work() {
   const root = useRef(null)
@@ -176,13 +183,15 @@ export function Work() {
     <section className="section work" id="work" ref={root}>
       <SectionHead
         index="04"
-        title="Three products, end to end"
+        title="Four builds, one still in the lab"
         note="Scroll sideways. Tap any one to open the full story."
       />
 
       <div className="work__viewport" ref={viewport}>
         <div className="work__track" ref={track}>
-          {PROJECTS.map((project) => (
+          {PROJECTS.map((project) => {
+            const Mock = DEVICE_MOCKS[project.device] ?? BrowserMock
+            return (
             <article className="pcard" key={project.id}>
               {/* .pcard is the full-viewport slot; .pcard__frame is the visible
                   rectangle. Keeping them separate means the swing pivots around
@@ -190,7 +199,7 @@ export function Work() {
               <div className="pcard__frame">
                 <div className="pcard__shot">
                   <div className="pcard__shotInner">
-                    {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
+                    <Mock />
                   </div>
                   <span className="pcard__glow" aria-hidden="true" />
                 </div>
@@ -200,6 +209,18 @@ export function Work() {
                     <span>{project.id}</span>
                     <i />
                     <span>{project.year}</span>
+                    {project.flagship && (
+                      <>
+                        <i />
+                        <span className="pill pill--live">Flagship</span>
+                      </>
+                    )}
+                    {project.stage && (
+                      <>
+                        <i />
+                        <span className="pill pill--learning">{project.stage}</span>
+                      </>
+                    )}
                   </p>
 
                   <h3 className="pcard__title">{project.title}</h3>
@@ -229,7 +250,8 @@ export function Work() {
                 />
               </div>
             </article>
-          ))}
+            )
+          })}
 
           {/* Closing panel so the rail ends on an invitation, not a hard stop. */}
           <article className="pcard pcard--end">

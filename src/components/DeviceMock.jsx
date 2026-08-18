@@ -226,3 +226,227 @@ export function BrowserMock() {
     </div>
   )
 }
+
+const DOC_TILES = [
+  { label: 'Risk score', to: 72 },
+  { label: 'Clauses flagged', value: '6' },
+  { label: 'Papers synced', value: '12' },
+]
+
+/**
+ * DocMind: the interesting part of a document-intelligence tool isn't a
+ * dashboard, it's the answer citing where it came from. So the panel leads
+ * with the RAG chat exchange rather than another metrics grid.
+ */
+export function DocMock() {
+  const root = useRef(null)
+
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el) return
+    if (prefersReducedMotion()) return
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 1.6,
+        scrollTrigger: { trigger: el, start: 'top 90%', end: 'bottom 10%', toggleActions: 'play pause resume pause' },
+      })
+
+      tl.fromTo(
+        '.mockb__tile',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'out-expo' }
+      ).fromTo(
+        '.mockd__msg',
+        { y: 18, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.22, ease: 'out-expo' },
+        '-=0.2'
+      )
+
+      const counter = el.querySelector('[data-count]')
+      if (counter) {
+        const obj = { v: 0 }
+        tl.to(
+          obj,
+          {
+            v: 72,
+            duration: 1.2,
+            ease: 'out-expo',
+            onUpdate: () => (counter.textContent = Math.round(obj.v)),
+          },
+          0.15
+        )
+      }
+
+      tl.to('.mockd__msg, .mockb__tile', { opacity: 0.4, duration: 0.5, stagger: 0.04 }, '+=1.3')
+    }, el)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <div className="mock mock--browser" ref={root} aria-hidden="true">
+      <div className="mockb__chrome">
+        <span className="mockb__dots">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="mockb__url mono">docmind.app / legal-intelligence</span>
+      </div>
+
+      <div className="mockb__body">
+        <aside className="mockb__side">
+          <span className="mockb__logo">DM</span>
+          {['Legal', 'Research', 'Compare', 'Chat'].map((l, i) => (
+            <span className={`mockb__nav ${i === 0 ? 'is-active' : ''}`} key={l}>
+              {l}
+            </span>
+          ))}
+        </aside>
+
+        <div className="mockb__main">
+          <div className="mockb__tiles">
+            {DOC_TILES.map((t) => (
+              <div className="mockb__tile" key={t.label}>
+                <em className="mono">{t.label}</em>
+                <b {...(t.to !== undefined ? { 'data-count': true } : {})}>{t.value ?? 0}</b>
+              </div>
+            ))}
+          </div>
+
+          <div className="mockd__chat">
+            <p className="mockd__msg mockd__msg--user">Does this lease allow early termination?</p>
+            <p className="mockd__msg mockd__msg--ai">
+              Yes — clause 14.2 permits termination after month 12 with 60 days&rsquo; notice.
+              <span className="mockd__cite mono">Clause 14.2</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const RISK_FACTORS = [
+  { label: 'Litigation exposure', severity: 82 },
+  { label: 'Related-party transactions', severity: 64 },
+  { label: 'Revenue concentration', severity: 71 },
+  { label: 'Regulatory approval pending', severity: 45 },
+]
+
+/**
+ * IPO Prospectus Risk Decoder: severity reads better as a bar than a badge —
+ * the whole point of the product is that risk is a gradient DRHP language
+ * tries to flatten, so the mock should not flatten it either.
+ */
+export function RiskMock() {
+  const root = useRef(null)
+
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el) return
+    if (prefersReducedMotion()) return
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        repeat: -1,
+        repeatDelay: 1.6,
+        scrollTrigger: { trigger: el, start: 'top 90%', end: 'bottom 10%', toggleActions: 'play pause resume pause' },
+      })
+
+      tl.fromTo(
+        '.mockb__tile',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'out-expo' }
+      ).fromTo(
+        '.mockr__factor',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, stagger: 0.09 },
+        '-=0.2'
+      )
+
+      RISK_FACTORS.forEach((f, i) => {
+        tl.fromTo(
+          `.mockr__bar--${i} i`,
+          { width: '0%' },
+          { width: f.severity + '%', duration: 0.7, ease: 'power2.out' },
+          `<+=0.05`
+        )
+      })
+
+      const counter = el.querySelector('[data-count]')
+      if (counter) {
+        const obj = { v: 0 }
+        tl.to(
+          obj,
+          {
+            v: 68,
+            duration: 1.1,
+            ease: 'out-expo',
+            onUpdate: () => (counter.textContent = Math.round(obj.v)),
+          },
+          0.15
+        )
+      }
+
+      tl.to('.mockr__factor, .mockb__tile', { opacity: 0.4, duration: 0.5, stagger: 0.04 }, '+=1.3')
+    }, el)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <div className="mock mock--browser" ref={root} aria-hidden="true">
+      <div className="mockb__chrome">
+        <span className="mockb__dots">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="mockb__url mono">ipo-decoder / drhp-2026-114</span>
+      </div>
+
+      <div className="mockb__body">
+        <aside className="mockb__side">
+          <span className="mockb__logo">RD</span>
+          {['Filing', 'Risks', 'Benchmark', 'Insights'].map((l, i) => (
+            <span className={`mockb__nav ${i === 0 ? 'is-active' : ''}`} key={l}>
+              {l}
+            </span>
+          ))}
+        </aside>
+
+        <div className="mockb__main">
+          <div className="mockb__tiles">
+            <div className="mockb__tile">
+              <em className="mono">Overall risk</em>
+              <b data-count>0</b>
+            </div>
+            <div className="mockb__tile">
+              <em className="mono">Factors flagged</em>
+              <b>{RISK_FACTORS.length}</b>
+            </div>
+            <div className="mockb__tile">
+              <em className="mono">Vs. benchmark</em>
+              <b>+18%</b>
+            </div>
+          </div>
+
+          <div className="mockr__factors">
+            {RISK_FACTORS.map((f, i) => (
+              <div className="mockr__factor" key={f.label}>
+                <span className="mockr__label">{f.label}</span>
+                <span className={`mockr__bar mockr__bar--${i}`}>
+                  <i />
+                </span>
+                <span className="mockr__value mono">{f.severity}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

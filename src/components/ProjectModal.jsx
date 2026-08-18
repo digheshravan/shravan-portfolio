@@ -3,7 +3,14 @@ import { createPortal } from 'react-dom'
 import { gsap } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
 import { getLenis } from '../hooks/useSmoothScroll'
-import { PhoneMock, BrowserMock } from './DeviceMock'
+import { PhoneMock, BrowserMock, DocMock, RiskMock } from './DeviceMock'
+
+const DEVICE_MOCKS = {
+  phone: PhoneMock,
+  browser: BrowserMock,
+  docmind: DocMock,
+  riskdecoder: RiskMock,
+}
 
 /**
  * Floating detail panel for a single project.
@@ -131,6 +138,12 @@ export function ProjectModal({ project, origin, onClose }) {
             <span>{project.year}</span>
             <i />
             <span>{project.kind}</span>
+            {project.stage && (
+              <>
+                <i />
+                <span className="pill pill--learning">{project.stage}</span>
+              </>
+            )}
           </div>
 
           <h2 className="pmodal__title" id="pmodal-title">
@@ -139,9 +152,27 @@ export function ProjectModal({ project, origin, onClose }) {
 
           <p className="pmodal__summary">{project.summary}</p>
 
+          {project.pipeline && (
+            <ol className="pmodal__pipeline mono" aria-label="Processing pipeline">
+              {project.pipeline.map((step, i) => (
+                <li key={step}>
+                  <span className="pmodal__pipelineStep">{step}</span>
+                  {i < project.pipeline.length - 1 && (
+                    <span className="pmodal__pipelineArrow" aria-hidden="true">
+                      →
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+
           <div className="pmodal__grid">
             <div className="pmodal__visual">
-              {project.device === 'phone' ? <PhoneMock /> : <BrowserMock />}
+              {(() => {
+                const Mock = DEVICE_MOCKS[project.device] ?? BrowserMock
+                return <Mock />
+              })()}
             </div>
 
             <div className="pmodal__detail">
@@ -177,30 +208,39 @@ export function ProjectModal({ project, origin, onClose }) {
           </div>
 
           <footer className="pmodal__foot">
-            <p className="pmodal__footNote">
-              Full source, commit history and setup instructions live on GitHub.
-            </p>
-            <a
-              className="btn btn--primary pmodal__cta"
-              href={project.repo}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor-label="GitHub"
-            >
-              <span>
-                View the code
-                <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-                  <path
-                    d="M3 13L13 3M13 3H5M13 3v8"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
+            {project.repo ? (
+              <>
+                <p className="pmodal__footNote">
+                  Full source, commit history and setup instructions live on GitHub.
+                </p>
+                <a
+                  className="btn btn--primary pmodal__cta"
+                  href={project.repo}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor-label="GitHub"
+                >
+                  <span>
+                    View the code
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                      <path
+                        d="M3 13L13 3M13 3H5M13 3v8"
+                        stroke="currentColor"
+                        strokeWidth="1.6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </a>
+              </>
+            ) : (
+              <p className="pmodal__footNote">
+                Still in development — not public yet. The repository goes live here once it
+                ships.
+              </p>
+            )}
           </footer>
         </div>
       </div>

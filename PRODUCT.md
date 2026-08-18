@@ -20,11 +20,11 @@ It exists to do three things at once: be a complete public record of his work, p
 
 ## Positioning
 
-A student engineer who ships whole products, across four fronts: **application security, AI-based applications, mobile applications, and web development.**
+A Computer Engineering + Management student who ships whole products, across four fronts: **software engineering, AI & generative systems, mobile product engineering, and data/finance technology.** (Superseded framing: earlier revisions led with application security as a fourth front; the owner's updated CV and instructions repositioned the site around AI/GenAI-RAG and the MBA Tech management stream instead. JWT and row-level security remain real, demonstrated evidence — they now sit inside the software-engineering front rather than as a headline pillar.)
 
-The strongest differentiator is no longer the breadth — it is that the AI work is **professional, not academic**. PetPal AI was built as a Flutter Developer at Tyrannix Pvt. Ltd. over an eight-week technical internship: a production-oriented app with a real RAG pipeline, nine-collection Firestore schema, and a deliberate architectural decision to avoid a vector database. Very few undergraduates have shipped retrieval-augmented generation inside a company.
+The strongest differentiator is no longer the breadth — it is that the AI work is **professional, not academic, and now spans three separate builds**. PetPal AI was built as a Flutter Developer at Tyrannix Pvt. Ltd. over an eight-week technical internship: a production-oriented app with a real RAG pipeline, nine-collection Firestore schema, and a deliberate architectural decision to avoid a vector database. Very few undergraduates have shipped retrieval-augmented generation inside a company. DocMind extends that into a self-directed, dual-module document-intelligence platform (legal contract analysis + academic research synthesis) with a verified, public technical implementation. The IPO Prospectus Risk Decoder — in development, CV-sourced only, no public repository yet — applies the same document-reasoning approach to a harder, adversarial reading problem, and is also where the MBA Tech management stream (Bloomberg Market Concepts, Finance Fundamentals, Spreadsheet Analysis) becomes directly relevant to the engineering work rather than a separate credential.
 
-Around that sit two self-directed full-stack products and a portfolio whose WebGL and motion system he wrote by hand — so the claim is: he has done this both under supervision and alone.
+Around that sit two self-directed full-stack/mobile products (MediSlot, Car Rental Management System) and a portfolio whose WebGL and motion system he wrote by hand — so the claim is: he has done this both under supervision and alone.
 
 ## Operating Context
 
@@ -40,7 +40,8 @@ Around that sit two self-directed full-stack products and a portfolio whose WebG
 - Single-page React application; no backend, no database, no authentication. Content is static and edited in `src/data/content.js`.
 - The scroll, WebGL and motion architecture are hand-written and documented in `docs/adr/` (nine ADRs). Those decisions are load-bearing and should be read before changing motion or layering.
 - The implementation currently honours `prefers-reduced-motion` with a full calm path and a `?motion=full` override. This is existing behaviour, not a product requirement the owner has stated.
-- **Undecided:** which repositories count as flagship case studies versus archive entries.
+- **Date of birth and CGPA never appear on the site**, including on the downloadable résumé. Decided. The source CV (an NMIMS institutional-format document) carries both; `public/Shravan-Dige-CV.pdf` is a separately generated, clean résumé with the same project/experience/certification content and neither field.
+- **Flagship project treatment:** DocMind and the IPO Prospectus Risk Decoder get extra visual weight in the Work section (a "Flagship" badge and a pipeline-stepper visualisation of their processing flow) — decided, per the owner's instruction that these two are the strongest differentiators from a typical student portfolio.
 - **Responsible-disclosure constraint.** The Tyrannix internship report lists, under Future Scope, that the Gemini API key still needs migrating to a server-side proxy. Writing that on a public page would publish an unresolved weakness in a live product belonging to a former employer. It must not appear on the site in any form, however it is phrased, unless Tyrannix confirms it is resolved or agrees to its disclosure. The *general* engineering lesson — that client-held API keys belong behind a proxy — may be discussed without reference to this product.
 
 ## Brand Commitments
@@ -53,14 +54,17 @@ Around that sit two self-directed full-stack products and a portfolio whose WebG
 
 **Real and verifiable:**
 
-- `Pet-Care-AI` — Flutter, Firebase, Google Gemini. Conversational assistant for pet owners.
+- `Pet-Care-AI` — Flutter, Firebase, Google Gemini. Conversational assistant for pet owners; the same work as PetPal AI, below.
 - `Car_Rental_System` — Angular, Spring Boot, MySQL, JWT. Admin/Customer role separation.
-- `doctor-apppointment-application` — Flutter, Supabase. Doctor/Patient roles, real-time slots, row-level security. *(Repository name contains a typo in the URL.)*
-- `attendance_calculator_flutter`, `DocMind`, `Sigma-Web-Development-Course`, `digheshravan.github.io` — further public repositories.
-- Education: MBA Tech Computer Engineering, MPSTME NMIMS Mumbai, 2024–2028. Diploma in Computer Engineering, Pravin Patil College, MSBTE, 2021–2024. SSC, MSBSHSE, 2020–2021.
+- `doctor-apppointment-application` — Flutter, Supabase. Doctor/Patient roles, real-time slots, row-level security. *(Repository name contains a typo in the URL.)* The CV now presents this product under the name **MediSlot**, with location-based doctor discovery added to the description — the site follows the CV's naming.
+- `DocMind` — verified against the public repository README (2026). Dual-module AI document-intelligence platform: a Legal Intelligence Suite (contract/lease risk analysis, clause-level classification, document comparison, RAG chat) and a Research Synthesizer (up to 15 academic papers, contradiction detection, research-gap identification). Backend is FastAPI + SQLAlchemy; frontend is React + Vite + Recharts; inference runs on Groq-hosted Llama 3.3; retrieval uses a local ChromaDB vector store with `all-MiniLM-L6-v2` embeddings.
+- **IPO Prospectus Risk Decoder** — CV-sourced only (Aug 2026), no public repository as of this writing. LLM-based tool that extracts and scores risk factors from IPO DRHP filings, benchmarks them against comparable filings, and flags disclosures that read as obscured or understated. Site copy stays general and does not claim a specific architecture, accuracy figure, or shipped status beyond what the CV states — see Product Principle 1.
+- `attendance_calculator_flutter`, `Sigma-Web-Development-Course`, `digheshravan.github.io` — further public repositories, archive-tier.
+- Education: MBA Tech, Computer Engineering (Engineering stream) with a Management stream in Business, IT & Analytics (BIA), MPSTME NMIMS Mumbai, 2024–2028. Diploma in Computer Engineering, Pravin Patil College, MSBTE, 2021–2024. SSC, MSBSHSE, 2020–2021. CGPA and date of birth appear on the source CV and are withheld from the site by owner decision — see Capabilities and Constraints.
 - Smart India Hackathon 2025 — selected at college level, Round 1, 27 September 2025.
+- Bloomberg Market Concepts, Bloomberg Finance Fundamentals, Bloomberg Spreadsheet Analysis — three certifications, August 2026.
 - UI/UX Design Certification, six-week programme, 2022.
-- `public/Shravan-Dige-CV.pdf` — the CV as published.
+- `public/Shravan-Dige-CV.pdf` — the CV as published; regenerated from the source CV with CGPA and date of birth removed, since the source document (an NMIMS-format CV) carries both and the site does not.
 
 **Professional experience — verified against `N130 Shravan Dige Final Report TIP.pdf`:**
 
@@ -91,6 +95,8 @@ Around that sit two self-directed full-stack products and a portfolio whose WebG
 **Known absences future work must not fabricate:**
 
 - No security tooling, research, publications, or a project named CodeSentinel. No employment history beyond the internship above. No testimonials, metrics, user numbers, or awards other than the SIH college-level selection recorded above.
+- No public repository for the IPO Prospectus Risk Decoder as of this writing — do not invent one, a tech stack beyond "LLM Analysis · Python," an accuracy figure, or a "shipped" status. Re-verify before removing its "In development" marking.
+- DocMind's technical claims (FastAPI/SQLAlchemy, Groq/Llama 3.3, ChromaDB, `all-MiniLM-L6-v2`, the "<2s avg" inference figure) are sourced from the repository README as of August 2026 — re-verify against the live README before restating if it has since changed.
 
 ## Product Principles
 

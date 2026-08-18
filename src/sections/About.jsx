@@ -96,12 +96,13 @@ export function About() {
       <div className="about__cards">
         <article className="about__card">
           <h3>
-            <Reveal>Security is a design decision</Reveal>
+            <Reveal>Engineering, priced like a decision</Reveal>
           </h3>
           <p>
-            Access control belongs in the database, not in a client-side check that a determined
-            user can simply skip. Row-level policies and JWT-guarded endpoints are how every
-            product I ship decides who may do what.
+            MBA Tech pairs the Computer Engineering degree with a management stream — Bloomberg's
+            market and finance coursework sits in the same semesters as data structures. It shows
+            up as a habit: a feature gets asked what it costs and who it's for, not only whether
+            it compiles.
           </p>
         </article>
 

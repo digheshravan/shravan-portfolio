@@ -1147,6 +1147,37 @@
   letter-spacing: -0.02em;
 }
 
+.pmodal__pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.6rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  list-style: none;
+}
+
+.pmodal__pipeline li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pmodal__pipelineStep {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+.pmodal__pipelineArrow {
+  color: var(--cyan);
+  opacity: 0.7;
+  font-size: 0.7rem;
+}
+
 .pmodal__grid {
   display: grid;
   grid-template-columns: 0.85fr 1fr;

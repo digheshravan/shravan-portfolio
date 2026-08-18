@@ -74,7 +74,7 @@ export default function App() {
         <div className="band" data-panel>
           <Marquee items={MARQUEE} speed={62} direction={1} />
           <Marquee
-            items={['Full-stack', 'Cross-platform', 'UI/UX certified', 'MBA Tech', 'NMIMS Mumbai']}
+            items={['Full-stack', 'Cross-platform', 'Bloomberg certified', 'MBA Tech', 'NMIMS Mumbai']}
             speed={44}
             direction={-1}
             className="marquee--outline"
