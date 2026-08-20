@@ -57,6 +57,21 @@ export function Work() {
               if (self.isActive) animateToBeat(PROJECT_SCENES[caseEl.dataset.slug][0])
             },
           })
+
+          const steps = gsap.utils.toArray('.case__step', caseEl)
+          steps.forEach((step, index) => {
+            ScrollTrigger.create({
+              trigger: step,
+              start: 'top 75%',
+              end: 'bottom 25%',
+              onToggle: (self) => {
+                if (self.isActive) {
+                  steps.forEach(s => s.classList.remove('is-active'))
+                  step.classList.add('is-active')
+                }
+              }
+            })
+          })
         })
       }
 
@@ -179,16 +194,6 @@ export function Work() {
 
               <h3 className="case__title">{project.title}</h3>
               <p className="case__kind mono">{project.kind}</p>
-              <p className="case__blurb">{project.summary}</p>
-
-              <ol className="case__pipeline mono" aria-label={`${project.title} pipeline`}>
-                {project.pipeline.map((step, i) => (
-                  <li className="case__step" key={step}>
-                    <span className="case__stepIndex">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
 
               <div className="case__metrics">
                 {project.metrics.map((m) => (
@@ -196,14 +201,6 @@ export function Work() {
                     <em className="mono">{m.k}</em>
                     <b>{m.v}</b>
                   </div>
-                ))}
-              </div>
-
-              <div className="case__stack">
-                {project.stack.map((s) => (
-                  <span className="chip" key={s}>
-                    {s}
-                  </span>
                 ))}
               </div>
 
@@ -238,6 +235,25 @@ export function Work() {
                     ships.
                   </p>
                 )}
+              </div>
+
+              <p className="case__blurb">{project.summary}</p>
+
+              <ol className="case__pipeline mono" aria-label={`${project.title} pipeline`}>
+                {project.pipeline.map((step, i) => (
+                  <li className="case__step" key={step}>
+                    <span className="case__stepIndex">{String(i + 1).padStart(2, '0')}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="case__stack">
+                {project.stack.map((s) => (
+                  <span className="chip" key={s}>
+                    {s}
+                  </span>
+                ))}
               </div>
             </div>
           </article>

@@ -46,6 +46,7 @@ export const sysCommon = /* glsl */ `
   const float F_CLUSTER4 = 7.0;   // the four domains
   const float F_LATTICE  = 8.0;   // coordination grid
   const float F_RESOLVE  = 9.0;   // outcome: one clean structure
+  const float F_LIVING   = 10.0;  // hero only: architecture with a current running through it
 
   /**
    * Node positions. Deliberate, never random — a node sits where something is

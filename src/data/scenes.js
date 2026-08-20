@@ -19,12 +19,16 @@ import { PROJECTS } from './content'
 
 export const SECTION_BEATS = {
   hero: {
-    rows: { form: FORM.SCATTER, amt: 1 },
-    nodes: { form: FORM.SCATTER, amt: 1 },
+    // "Living System Layers" — architecture with a current running through
+    // it, not the page's busiest formation. Rows/nodes/links off entirely:
+    // the hero has to sit quietly behind large type, so only Layers (in the
+    // new LIVING formation — see Layers.jsx) carries the visual.
+    rows: { form: FORM.NONE, amt: 0 },
+    nodes: { form: FORM.NONE, amt: 0 },
     links: { form: FORM.NONE, amt: 0 },
-    layers: { form: FORM.SCATTER, amt: 1 },
+    layers: { form: FORM.LIVING, amt: 1 },
     active: 0,
-    opacity: 1,
+    opacity: 0.55,
   },
   about: {
     rows: { form: FORM.NONE, amt: 0 },

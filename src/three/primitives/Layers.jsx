@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { sysCommon } from '../shaders/system.glsl.js'
+import { simplex3d } from '../shaders/noise.glsl.js'
 import { scene } from '../../lib/sceneState'
-import { damp } from '../../lib/motionState'
+import { pointer, damp } from '../../lib/motionState'
 
 /**
  * LAYERS — architectural strata. A document, a tier, a plane the other
@@ -23,6 +24,7 @@ const vert = /* glsl */ `
 
   varying vec2 vUv;
   varying float vVis;
+  varying float vIdx;
 
   struct Pane { vec3 pos; vec2 size; float rot; float vis; };
 
@@ -80,6 +82,23 @@ const vert = /* glsl */ `
       return p;
     }
 
+    if (id < F_LIVING + 0.5 && id > F_LIVING - 0.5){
+      // Hero only: a considered cascade through depth, not a random scatter
+      // and not parallel tiers — the former reads as unstructured, the
+      // latter reads as a dashboard. A gentle diagonal instead, like panes
+      // of glass set down one after another. The "living" part is entirely
+      // in the fragment shader below; this is just where they sit.
+      if (i > 5.5) return p;
+      vec2 h = hash21(i * 7.3 + 11.0);
+      p.pos = vec3(-1.6 + i * 0.95, 0.9 - i * 0.5, -2.6 - i * 1.3);
+      p.pos.x += sin(t * 0.035 + i * 1.9) * 0.18;
+      p.pos.y += cos(t * 0.03 + i * 1.4) * 0.14;
+      p.rot = (h.x - 0.5) * 0.22 + i * 0.03;
+      p.size = vec2(4.2 + h.y * 0.6, 2.9 + h.x * 0.5);
+      p.vis = 0.26;
+      return p;
+    }
+
     return p;
   }
 
@@ -94,6 +113,7 @@ const vert = /* glsl */ `
 
     vVis = vis;
     vUv = uv;
+    vIdx = aIdx;
 
     vec2 q = position.xy * size;
     float c = cos(rot), s = sin(rot);
@@ -105,12 +125,15 @@ const vert = /* glsl */ `
 
 const frag = /* glsl */ `
   precision highp float;
+  ${simplex3d}
 
-  uniform vec3 uInk;
-  uniform float uOpacity;
+  uniform vec3 uInk, uAccent;
+  uniform float uOpacity, uTime;
+  uniform vec2 uPointer;
 
   varying vec2 vUv;
   varying float vVis;
+  varying float vIdx;
 
   void main(){
     if (vVis <= 0.001) discard;
@@ -122,10 +145,28 @@ const frag = /* glsl */ `
     );
     float corner = smoothstep(0.05, 0.0, min(d.x, d.y)) * 0.4;
 
-    float a = (edge * 0.7 + corner) * vVis * uOpacity;
+    float a;
+    vec3 col = uInk;
+
+    // The "living" current — reactivates the fbm chunk the old hero artifact
+    // used at far greater scale (ADR-0008), here just to walk each pane's
+    // edge slowly. Gated behind edge>0 so the (moderately expensive) noise
+    // call only runs for fragments actually near a border — most of each
+    // pane's fill is empty and never reaches this branch.
+    if (edge > 0.001){
+      float flow = fbm(vec3(vUv * 2.2 + uPointer * 0.12, uTime * 0.05 + vIdx * 3.7));
+      float flowN = clamp(flow * 0.5 + 0.5, 0.0, 1.0);
+      float edgeMod = mix(0.55, 1.0, flowN);
+      float accentAmt = smoothstep(0.72, 0.88, flowN) * 0.7;
+      col = mix(uInk, uAccent, accentAmt);
+      a = (edge * edgeMod * 0.7 + corner) * vVis * uOpacity;
+    } else {
+      a = corner * vVis * uOpacity;
+    }
+
     if (a <= 0.003) discard;
 
-    gl_FragColor = vec4(uInk, a);
+    gl_FragColor = vec4(col, a);
   }
 `
 
@@ -150,6 +191,8 @@ export function Layers({ count = 8 }) {
       uAmt: { value: scene.layers.amt },
       uOpacity: { value: scene.opacity },
       uInk: { value: new THREE.Color('#F4F1EA') },
+      uAccent: { value: new THREE.Color('#E0472C') },
+      uPointer: { value: new THREE.Vector2(0, 0) },
     }),
     []
   )
@@ -163,6 +206,7 @@ export function Layers({ count = 8 }) {
     u.uBlend.value = damp(u.uBlend.value, scene.blend, 7, dt)
     u.uAmt.value = damp(u.uAmt.value, scene.layers.amt, 5, dt)
     u.uOpacity.value = damp(u.uOpacity.value, scene.opacity, 4, dt)
+    u.uPointer.value.set(pointer.ex, pointer.ey)
   })
 
   return (

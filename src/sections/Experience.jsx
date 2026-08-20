@@ -78,6 +78,13 @@ export function Experience() {
               </div>
 
               <p className="xp__org">{job.orgNote}</p>
+              
+              {job.project && (
+                <div className="xp__projectBadge mono">
+                  Project <i/> <span>{job.project}</span>
+                </div>
+              )}
+
               <p className="xp__summary">{job.summary}</p>
 
               {job.judgment && (

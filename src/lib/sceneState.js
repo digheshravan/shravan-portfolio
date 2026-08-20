@@ -45,6 +45,7 @@ export const FORM = {
   CLUSTER4: 7,
   LATTICE: 8,
   RESOLVE: 9,
+  LIVING: 10,
 }
 
 /**

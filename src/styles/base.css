@@ -17,6 +17,12 @@
   --fg-3: rgba(242, 239, 233, 0.56);
   --fg-4: rgba(242, 239, 233, 0.5);
 
+  @media (max-width: 900px) {
+    --fg-2: rgba(242, 239, 233, 0.82);
+    --fg-3: rgba(242, 239, 233, 0.76);
+    --fg-4: rgba(242, 239, 233, 0.7);
+  }
+
   /* Faint decorative marks: separator dots, rail ticks, outline strokes. This
      was --fg-4's second job, and it is why that token could not simply be
      raised — legible text and a 3px dot want opposite values. */
