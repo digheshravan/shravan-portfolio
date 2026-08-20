@@ -48,100 +48,62 @@ export const MARQUEE = [
 ]
 
 /**
- * The four fronts the whole site is organised around — mapped directly to
- * the CV's Core Skills groupings rather than invented separately.
- *
- * `status` is deliberately honest: three of these are shipping today, one —
- * the data/finance side of the MBA Tech management stream — is newer and
- * marked as such. A student who marks the difference reads as self-aware;
- * one who claims mastery of everything reads as unverified, and recruiters
- * check.
+ * The intersection the whole site is organised around: Engineering, AI,
+ * Data and Management aren't separate interests, they're four views of the
+ * same MBA Tech degree — the engineering stream, the AI/GenAI work built on
+ * top of it, the data literacy, and the Business/IT & Analytics management
+ * stream that decides which of it is worth building.
  */
-export const FOCUS = [
+export const DOMAINS = [
   {
     id: '01',
-    title: 'Software engineering',
-    status: 'Shipping',
-    tone: 'live',
-    blurb:
-      'Full-stack, end to end — a typed backend, a normalised schema, and an interface worth using, on every product I ship.',
-    evidence: [
-      'Spring Boot REST APIs behind Angular and React frontends',
-      'Normalised MySQL / PostgreSQL schemas, not denormalised shortcuts',
-      'This portfolio: React, Three.js and custom GLSL, hand-built',
-    ],
-    stack: ['Java', 'Python', 'React', 'Angular', 'Spring Boot', 'REST APIs'],
+    title: 'Engineering',
+    body: "Full-stack builds across web, mobile and this site's own WebGL layer — chosen per problem, not per habit.",
   },
   {
     id: '02',
-    title: 'AI & generative systems',
-    status: 'Shipping',
-    tone: 'live',
-    blurb:
-      'Wiring real models into real products — grounded retrieval over improvisation, and the failure modes designed for rather than hoped away.',
-    evidence: [
-      'PetPal AI: a RAG pipeline shipped professionally over an 8-week technical internship',
-      'DocMind: dual RAG modules for legal contract analysis and academic research synthesis',
-      'IPO Prospectus Risk Decoder: an LLM pipeline reading regulatory filings for understated risk',
-    ],
-    stack: ['Generative AI', 'RAG', 'Groq · Llama 3.3', 'Google Gemini', 'Prompt design'],
+    title: 'AI',
+    body: 'RAG systems shipped professionally and self-directed — PetPal AI at Tyrannix, DocMind, and the IPO Prospectus Risk Decoder.',
   },
   {
     id: '03',
-    title: 'Mobile product engineering',
-    status: 'Shipping',
-    tone: 'live',
-    blurb:
-      'One Dart codebase, both platforms. Cross-platform is only worth it if the result does not feel ported — so it does not.',
-    evidence: [
-      'MediSlot: location-aware doctor discovery with real-time appointment sync',
-      'PetPal AI: health tracking, reminders and a GPS service directory',
-      'Row-level security and multi-role auth enforced at the database layer',
-    ],
-    stack: ['Flutter', 'Dart', 'Supabase', 'Firebase'],
+    title: 'Data',
+    body: "SQL, analysis and Bloomberg's market-data coursework — the measurement layer behind every product decision.",
   },
   {
     id: '04',
-    title: 'Data & finance technology',
-    status: 'Going deeper',
-    tone: 'learning',
-    blurb:
-      "The half of the MBA Tech degree that isn't engineering — where a product decision gets priced, not just shipped.",
-    evidence: [
-      'Bloomberg Market Concepts, Finance Fundamentals and Spreadsheet Analysis, 2026',
-      'SQL and data analysis / visualisation across coursework and project work',
-      'IPO Prospectus Risk Decoder applies this directly: risk scoring over financial filings',
-    ],
-    stack: ['SQL', 'Data Analysis', 'Visualisation', 'Bloomberg'],
+    title: 'Management',
+    body: "MBA Tech's Business, IT & Analytics stream, sitting in the same semesters as data structures — a feature gets asked what it costs and who it's for.",
   },
 ]
 
-/** Grouped by the four fronts above rather than by "languages / frameworks",
- *  so the list answers what I can be handed rather than what I have read. */
+/** Grouped by what I can be handed rather than by where I read about it —
+ *  CV-accurate, four categories: what I build with, what I build on top of
+ *  that, what I measure with, and how I work. */
 export const SKILLS = [
   {
     id: '01',
-    group: 'Software engineering',
-    blurb: 'Typed services, normalised schemas, and interfaces worth using.',
-    items: ['Java', 'Python', 'React', 'Angular', 'Spring Boot', 'REST APIs', 'Git & GitHub'],
+    group: 'Software',
+    blurb: 'The languages and frameworks every shipped product is built from.',
+    items: ['Java', 'Python', 'React', 'Angular', 'Flutter / Dart', 'Spring Boot'],
   },
   {
     id: '02',
-    group: 'AI & generative systems',
+    group: 'Intelligence',
     blurb: 'Models wired into products, with retrieval and failure modes designed for.',
     items: ['Artificial Intelligence & ML', 'Generative AI & RAG', 'LLM applications', 'Document intelligence'],
   },
   {
     id: '03',
-    group: 'Mobile',
-    blurb: 'One Dart codebase, two platforms, no ported-feeling compromises.',
-    items: ['Flutter', 'Dart', 'Firebase', 'Supabase'],
+    group: 'Data',
+    blurb: 'The management-stream half of the degree — measurement, not just code.',
+    items: ['SQL', 'Data Analysis & Visualization', 'Bloomberg Market Concepts', 'Financial data'],
   },
   {
     id: '04',
-    group: 'Data & finance',
-    blurb: 'The management-stream half of the degree — SQL, analysis, and market literacy.',
-    items: ['SQL', 'Data Analysis & Visualization', 'Bloomberg Market Concepts', 'Financial data'],
+    group: 'Engineering practice',
+    blurb: 'How the work actually gets built and shipped.',
+    items: ['Git & GitHub', 'REST API Development'],
   },
 ]
 
@@ -210,6 +172,7 @@ export const PROJECTS = [
     kind: 'Cross-platform mobile application',
     year: '2025',
     device: 'phone',
+    pipeline: ['Patient', 'Doctor', 'Clinic', 'Appointment'],
     summary:
       'A cross-platform care app that makes doctor discovery, scheduling and management feel instant — nearby doctors, live slots, one tap to confirm.',
     highlights: [
@@ -233,6 +196,7 @@ export const PROJECTS = [
     kind: 'Full-stack web application',
     year: '2025',
     device: 'browser',
+    pipeline: ['Frontend', 'API', 'Backend', 'Database'],
     summary:
       'End-to-end rental operations — inventory, bookings and billing — behind role-based access control.',
     highlights: [
@@ -273,9 +237,14 @@ export const EXPERIENCE = [
     project: 'PetPal AI',
     summary:
       'Designed and built PetPal AI — a Pet Care Knowledge Portal & Intelligent Assistant grounded in verified articles rather than left to improvise.',
+    // Pulled out of the highlights list on purpose — this is the single
+    // strongest engineering-judgement line in the whole site: reaching for
+    // simpler infrastructure because the corpus size didn't justify more,
+    // not reaching for a vector database because it was available.
+    judgment:
+      'Chose keyword retrieval on Firestore, ranked by relevance and species match, over introducing a vector database — the accuracy at this corpus size did not justify the extra infrastructure.',
     highlights: [
       'Shipped a retrieval-augmented generation pipeline over Google Gemini 2.5 Flash, grounding every answer in 50+ authored articles and citing its sources',
-      'Chose keyword retrieval on Firestore, ranked by relevance and species match, over introducing a vector database — the accuracy at this corpus size did not justify the extra infrastructure',
       'Modelled nine Firestore collections behind per-domain repository classes, keeping data access out of the presentation layer',
       'Structured the Flutter app in clean data, domain and presentation layers with Riverpod state management and GoRouter navigation',
       'Built pet profiles, a health tracker with weight charts and scheduled vaccination reminders, and a GPS service directory with distance sorting',
@@ -346,7 +315,6 @@ export const RECOGNITION = [
 
 export const NAV = [
   { label: 'Index', href: '#hero' },
-  { label: 'Focus', href: '#focus' },
   { label: 'About', href: '#about' },
   { label: 'Craft', href: '#skills' },
   { label: 'Work', href: '#work' },

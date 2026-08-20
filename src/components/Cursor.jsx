@@ -1,115 +1,72 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
-import { pointer, prefersReducedMotion } from '../lib/motionState'
+import { prefersReducedMotion } from '../lib/motionState'
 
 /**
- * A instrument-panel cursor, built for an engineer's portfolio.
+ * A contextual dot — additive to the native cursor, never a replacement for
+ * it (ADR-0015, superseding ADR-0009's instrument reticle).
  *
- * It reports the pointer's position in **normalised device coordinates** — the
- * exact -1 → 1 space the vertex and fragment shaders use for `uMouse`. So the
- * readout isn't decorative telemetry: it's the number currently deforming the
- * artifact behind the page. Move toward the object and watch X approach 1.
- *
- * The reticle is a real 3D object: a CSS-3D ring carrying its own perspective,
- * banking on Y and pitching on X in proportion to pointer velocity, so it leans
- * into movement like a gimbal and levels out when you stop.
- *
- * The native cursor stays visible throughout. The crosshair arms are drawn with
- * a transparent gap at the centre precisely so the system arrow reads through
- * them — nobody has to hunt for where they're pointing.
+ * The reticle it replaces read out the pointer's normalised coordinates
+ * because that was literally the number deforming the old artifact's
+ * shader — a HUD tied to a specific object that no longer exists. The
+ * current 3D system doesn't have a single `uMouse`-driven surface for a
+ * cursor readout to mean anything about, so carrying the HUD forward would
+ * make it decoration competing with the visual system it used to explain.
+ * What's left is what a cursor add-on should be: it tightens and tints
+ * toward the accent near anything interactive, and carries a short label
+ * where one is declared — nothing else.
  */
 export function Cursor() {
-  const reticleRef = useRef(null)
-  const ringRef = useRef(null)
-  const hudRef = useRef(null)
-  const xRef = useRef(null)
-  const yRef = useRef(null)
+  const dotRef = useRef(null)
+  const labelWrapRef = useRef(null)
   const labelRef = useRef(null)
 
   useEffect(() => {
     if (window.matchMedia('(pointer: coarse)').matches) return
     if (prefersReducedMotion()) return
 
-    const reticle = reticleRef.current
-    const ring = ringRef.current
-    const hud = hudRef.current
-    if (!reticle || !ring || !hud) return
+    const dot = dotRef.current
+    const labelWrap = labelWrapRef.current
+    if (!dot || !labelWrap) return
 
-    gsap.set([reticle, hud], { xPercent: -50, yPercent: -50, opacity: 0 })
-    gsap.set(ring, { transformPerspective: 340 })
+    gsap.set([dot, labelWrap], { xPercent: -50, yPercent: -50, opacity: 0 })
 
-    // The reticle tracks tightly; the HUD trails, so the readout settles a beat
-    // after the crosshair — it reads as an instrument catching up.
-    const rx = gsap.quickTo(reticle, 'x', { duration: 0.28, ease: 'out-expo' })
-    const ry = gsap.quickTo(reticle, 'y', { duration: 0.28, ease: 'out-expo' })
-    const hx = gsap.quickTo(hud, 'x', { duration: 0.58, ease: 'out-expo' })
-    const hy = gsap.quickTo(hud, 'y', { duration: 0.58, ease: 'out-expo' })
-
-    // Velocity → gimbal bank/pitch.
-    const bank = gsap.quickTo(ring, 'rotationY', { duration: 0.75, ease: 'out-expo' })
-    const pitch = gsap.quickTo(ring, 'rotationX', { duration: 0.75, ease: 'out-expo' })
-    const spin = gsap.quickTo(ring, 'rotationZ', { duration: 1.1, ease: 'out-expo' })
+    // The dot tracks tightly; the label trails a beat behind and sits offset
+    // from it, so the two never fight for the same point.
+    const dx = gsap.quickTo(dot, 'x', { duration: 0.18, ease: 'out-expo' })
+    const dy = gsap.quickTo(dot, 'y', { duration: 0.18, ease: 'out-expo' })
+    const lx = gsap.quickTo(labelWrap, 'x', { duration: 0.32, ease: 'out-expo' })
+    const ly = gsap.quickTo(labelWrap, 'y', { duration: 0.32, ease: 'out-expo' })
 
     let shown = false
-    let lastX = 0
-    let lastY = 0
     let state = 'idle'
 
     const onMove = (e) => {
       if (!shown) {
         shown = true
-        gsap.to([reticle, hud], { opacity: 1, duration: 0.45 })
+        gsap.to(dot, { opacity: 1, duration: 0.35 })
       }
-
-      const vx = e.clientX - lastX
-      const vy = e.clientY - lastY
-      lastX = e.clientX
-      lastY = e.clientY
-
-      rx(e.clientX)
-      ry(e.clientY)
-      hx(e.clientX + 34)
-      hy(e.clientY + 34)
-
-      bank(gsap.utils.clamp(-46, 46, vx * 1.5))
-      pitch(gsap.utils.clamp(-46, 46, -vy * 1.5))
-      spin(gsap.utils.clamp(-16, 16, vx * 0.35))
+      dx(e.clientX)
+      dy(e.clientY)
+      lx(e.clientX + 20)
+      ly(e.clientY + 20)
     }
-
-    // The coordinate readout is driven off the shared pointer singleton so the
-    // number on screen is literally the one handed to the shader each frame.
-    const fmt = (n) => (n < 0 ? '' : '+') + n.toFixed(3)
-    let lastPrintedX = null
-    let lastPrintedY = null
-
-    const tick = () => {
-      const nx = pointer.x
-      const ny = pointer.y
-      if (lastPrintedX === null || Math.abs(nx - lastPrintedX) > 0.001) {
-        lastPrintedX = nx
-        if (xRef.current) xRef.current.textContent = fmt(nx)
-      }
-      if (lastPrintedY === null || Math.abs(ny - lastPrintedY) > 0.001) {
-        lastPrintedY = ny
-        if (yRef.current) yRef.current.textContent = fmt(ny)
-      }
-    }
-    gsap.ticker.add(tick)
 
     const setState = (next, text) => {
       if (next === state) return
       state = next
-      reticle.dataset.state = next
-      hud.dataset.state = next
+      dot.dataset.state = next
 
-      gsap.to(reticle, {
-        scale: next === 'idle' ? 1 : 1.55,
-        duration: 0.55,
+      gsap.to(dot, {
+        scale: next === 'idle' ? 1 : 1.6,
+        duration: 0.4,
         ease: 'out-expo',
         overwrite: 'auto',
       })
 
+      const hasLabel = next === 'label' && Boolean(text)
       if (labelRef.current) labelRef.current.textContent = text || ''
+      gsap.to(labelWrap, { opacity: hasLabel ? 1 : 0, duration: 0.25, overwrite: 'auto' })
     }
 
     const onOver = (e) => {
@@ -119,17 +76,19 @@ export function Cursor() {
       setState(text ? 'label' : 'hover', text)
     }
 
-    const onDown = () => gsap.to(reticle, { scale: 0.78, duration: 0.2, overwrite: 'auto' })
+    const onDown = () =>
+      gsap.to(dot, { scale: 0.65, duration: 0.2, ease: 'out-expo', overwrite: 'auto' })
     const onUp = () =>
-      gsap.to(reticle, {
-        scale: state === 'idle' ? 1 : 1.55,
-        duration: 0.4,
+      gsap.to(dot, {
+        scale: state === 'idle' ? 1 : 1.6,
+        duration: 0.35,
+        ease: 'out-expo',
         overwrite: 'auto',
       })
 
     const onLeave = () => {
       shown = false
-      gsap.to([reticle, hud], { opacity: 0, duration: 0.3 })
+      gsap.to([dot, labelWrap], { opacity: 0, duration: 0.25 })
     }
 
     window.addEventListener('pointermove', onMove, { passive: true })
@@ -144,34 +103,16 @@ export function Cursor() {
       window.removeEventListener('pointerdown', onDown)
       window.removeEventListener('pointerup', onUp)
       document.removeEventListener('mouseleave', onLeave)
-      gsap.ticker.remove(tick)
-      gsap.killTweensOf([reticle, ring, hud])
+      gsap.killTweensOf([dot, labelWrap])
     }
   }, [])
 
   return (
     <div className="cursor" aria-hidden="true">
-      <div className="cursor__reticle" ref={reticleRef} data-state="idle">
-        <span className="cursor__ring" ref={ringRef} />
-        <span className="cursor__axis cursor__axis--x" />
-        <span className="cursor__axis cursor__axis--y" />
-        <span className="cursor__corner cursor__corner--tl" />
-        <span className="cursor__corner cursor__corner--tr" />
-        <span className="cursor__corner cursor__corner--bl" />
-        <span className="cursor__corner cursor__corner--br" />
-      </div>
-
-      <div className="cursor__hud" ref={hudRef} data-state="idle">
-        <span className="cursor__coord">
-          <em>x</em>
-          <b ref={xRef}>+0.000</b>
-        </span>
-        <span className="cursor__coord">
-          <em>y</em>
-          <b ref={yRef}>+0.000</b>
-        </span>
-        <span className="cursor__hudLabel" ref={labelRef} />
-      </div>
+      <span className="cursor__dot" ref={dotRef} data-state="idle" />
+      <span className="cursor__labelWrap" ref={labelWrapRef}>
+        <span className="cursor__label" ref={labelRef} />
+      </span>
     </div>
   )
 }

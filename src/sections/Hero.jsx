@@ -16,7 +16,8 @@ export function Hero({ ready }) {
     const reduced = prefersReducedMotion()
 
     const ctx = gsap.context(() => {
-      const targets = '.hero__eyebrow > *, .hero__glyph, .hero__rule, .hero__aside > *, .hero__cue'
+      const targets =
+        '.hero__eyebrow > *, .hero__glyph, .hero__rule, .hero__subtitle, .hero__aside > *, .hero__cue'
 
       if (reduced) {
         gsap.set(targets, { clearProps: 'all' })
@@ -31,6 +32,7 @@ export function Hero({ ready }) {
       gsap.set('.hero__eyebrow > *', { yPercent: 120, opacity: 0 })
       gsap.set('.hero__glyph', { yPercent: 118, rotate: 6 })
       gsap.set('.hero__rule', { scaleX: 0, transformOrigin: 'left center' })
+      gsap.set('.hero__subtitle', { y: 16, opacity: 0 })
       gsap.set('.hero__aside > *', { y: 34, opacity: 0 })
       gsap.set('.hero__cue', { y: 20, opacity: 0 })
 
@@ -53,7 +55,8 @@ export function Hero({ ready }) {
           '-=0.7'
         )
         .to('.hero__rule', { scaleX: 1, duration: 1.4 }, '-=1.0')
-        .to('.hero__aside > *', { y: 0, opacity: 1, duration: 1.1, stagger: 0.09 }, '-=1.1')
+        .to('.hero__subtitle', { y: 0, opacity: 1, duration: 0.9 }, '-=1.0')
+        .to('.hero__aside > *', { y: 0, opacity: 1, duration: 1.1, stagger: 0.09 }, '-=1.0')
         .to('.hero__cue', { y: 0, opacity: 1, duration: 0.9 }, '-=0.9')
 
       // Departure: the hero tips away from the viewer and falls into depth as
@@ -124,13 +127,12 @@ export function Hero({ ready }) {
                 <span className="hero__glyph">{c}</span>
               </span>
             ))}
-            <span className="hero__glyphMask hero__glyphMask--serif">
-              <span className="hero__glyph hero__glyph--serif">engineer</span>
-            </span>
           </span>
         </h1>
 
         <div className="hero__rule" />
+
+        <p className="hero__subtitle mono">Computer Engineering × Management</p>
 
         <div className="hero__foot">
           <div className="hero__aside">
@@ -146,7 +148,7 @@ export function Hero({ ready }) {
                   data-cursor-label="See"
                 >
                   <span data-magnetic-inner>
-                    Selected work
+                    View work
                     <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
                       <path
                         d="M3 13L13 3M13 3H5M13 3v8"
@@ -162,8 +164,14 @@ export function Hero({ ready }) {
               </Magnetic>
 
               <Magnetic strength={0.3}>
-                <a className="btn btn--ghost" href={`mailto:${PROFILE.email}`} data-cursor-label="Mail">
-                  <span data-magnetic-inner>Get in touch</span>
+                <a
+                  className="btn btn--ghost"
+                  href={PROFILE.resume}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor-label="Get"
+                >
+                  <span data-magnetic-inner>Resume</span>
                 </a>
               </Magnetic>
             </div>

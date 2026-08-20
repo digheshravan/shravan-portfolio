@@ -127,7 +127,10 @@ export function Preloader({ onComplete }) {
           ))}
         </div>
 
-        <div className="preloader__counter" ref={counterRef}>
+        <div
+          className={`preloader__counter${count >= 96 ? ' is-resolved' : ''}`}
+          ref={counterRef}
+        >
           <span>{String(count).padStart(3, '0')}</span>
           <em>%</em>
         </div>

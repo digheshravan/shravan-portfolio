@@ -1,6 +1,6 @@
 # ADR 0008: The hero artifact is custom GLSL, not a stock material
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0010
 - **Date:** 2026-08-05
 
 ## Context

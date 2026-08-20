@@ -13,8 +13,6 @@ export const scroll = {
   offset: 0,
   /** signed, normalised scroll speed — drives shader turbulence */
   velocity: 0,
-  /** smoothed absolute velocity, always 0 → 1 */
-  energy: 0,
 }
 
 export const pointer = {
@@ -26,19 +24,6 @@ export const pointer = {
   ey: 0,
   /** true once the visitor has actually moved a mouse (not a touch) */
   active: false,
-}
-
-/** Which section is currently on screen — lets the 3D scene change mood. */
-export const stage = {
-  index: 0,
-  /** 0 → 1 progress within the active section */
-  local: 0,
-}
-
-export const quality = {
-  /** dropped to false on low-end devices / reduced-motion */
-  effects: true,
-  dpr: 1.5,
 }
 
 /**

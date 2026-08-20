@@ -1,40 +1,23 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger } from '../lib/gsap'
 import { NAV, PROFILE } from '../data/content'
+import { prefersReducedMotion } from '../lib/motionState'
 import { scrollToSection, getLenis } from '../hooks/useSmoothScroll'
 import { Magnetic } from './Magnetic'
-
-function useLocalClock(timeZone) {
-  const [time, setTime] = useState('')
-  useEffect(() => {
-    const tick = () => {
-      setTime(
-        new Intl.DateTimeFormat('en-GB', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-          timeZone,
-        }).format(new Date())
-      )
-    }
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [timeZone])
-  return time
-}
 
 export function Nav({ ready }) {
   const root = useRef(null)
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState('#hero')
-  const time = useLocalClock(PROFILE.timezone)
 
   // Intro: the bar drops in only once the preloader has cleared.
   useLayoutEffect(() => {
     if (!ready) return
     const ctx = gsap.context(() => {
+      if (prefersReducedMotion()) {
+        gsap.set('.nav__item', { clearProps: 'all' })
+        return
+      }
       gsap.set('.nav__item', { yPercent: -140, opacity: 0 })
       gsap.to('.nav__item', {
         yPercent: 0,
@@ -48,20 +31,25 @@ export function Nav({ ready }) {
     return () => ctx.revert()
   }, [ready])
 
-  // Hide on scroll down, reveal on scroll up.
+  // Hide on scroll down, reveal on scroll up — a genuine motion effect, so it
+  // doesn't run under reduced motion; the bar just stays put instead. The
+  // active-link tracking below it is state, not motion, and runs regardless.
   useLayoutEffect(() => {
     if (!ready) return
     const el = root.current
+    const reduced = prefersReducedMotion()
     const ctx = gsap.context(() => {
-      const show = gsap.quickTo(el, 'yPercent', { duration: 0.6, ease: 'out-expo' })
-      ScrollTrigger.create({
-        start: 'top -120',
-        end: 'max',
-        onUpdate: (self) => {
-          if (open) return show(0)
-          show(self.direction === 1 && self.scroll() > 400 ? -140 : 0)
-        },
-      })
+      if (!reduced) {
+        const show = gsap.quickTo(el, 'yPercent', { duration: 0.6, ease: 'out-expo' })
+        ScrollTrigger.create({
+          start: 'top -120',
+          end: 'max',
+          onUpdate: (self) => {
+            if (open) return show(0)
+            show(self.direction === 1 && self.scroll() > 400 ? -140 : 0)
+          },
+        })
+      }
 
       NAV.forEach(({ href }) => {
         const target = document.querySelector(href)
@@ -112,21 +100,16 @@ export function Nav({ ready }) {
               href={href}
               onClick={(e) => go(e, href)}
               className={active === href ? 'is-active' : ''}
+              aria-current={active === href ? 'true' : undefined}
               data-cursor
             >
+              <span className="nav__dot" aria-hidden="true" />
               <span className="nav__linkInner">{label}</span>
             </a>
           ))}
         </nav>
 
         <div className="nav__item nav__aside">
-          <span className="nav__status">
-            <i className="dot" />
-            Open to internships
-          </span>
-          <span className="nav__clock mono">
-            {time} <em>IST</em>
-          </span>
           <Magnetic strength={0.25}>
             <button
               className={`nav__burger ${open ? 'is-open' : ''}`}
@@ -156,24 +139,30 @@ function Menu({ open, onNavigate }) {
     const el = root.current
     if (!el) return
 
+    // Click-triggered reveal: under reduced motion the overlay still opens
+    // and closes on click (that's interaction, not ambient motion), it just
+    // does so instantly rather than animating — zero-duration tweens so
+    // play()/reverse() keep working as the open/close trigger.
+    const d = prefersReducedMotion() ? 0 : undefined
+
     const ctx = gsap.context(() => {
       tl.current = gsap
         .timeline({ paused: true })
         // `el` is the context root: a '.menu' selector would be scoped to its
         // descendants and silently miss the shell itself.
         .set(el, { pointerEvents: 'auto', visibility: 'visible' })
-        .to('.menu__bg', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'in-out-quint' })
+        .to('.menu__bg', { clipPath: 'inset(0% 0% 0% 0%)', duration: d ?? 1, ease: 'in-out-quint' })
         .fromTo(
           '.menu__link span',
           { yPercent: 115 },
-          { yPercent: 0, duration: 0.9, stagger: 0.06, ease: 'out-expo' },
-          '-=0.55'
+          { yPercent: 0, duration: d ?? 0.9, stagger: d ?? 0.06, ease: 'out-expo' },
+          d === 0 ? '<' : '-=0.55'
         )
         .fromTo(
           '.menu__foot > *',
           { y: 24, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.7, stagger: 0.06 },
-          '-=0.6'
+          { y: 0, opacity: 1, duration: d ?? 0.7, stagger: d ?? 0.06 },
+          d === 0 ? '<' : '-=0.6'
         )
     }, root)
     return () => ctx.revert()

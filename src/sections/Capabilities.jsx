@@ -1,11 +1,10 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
-import { SKILLS, MARQUEE } from '../data/content'
+import { SKILLS } from '../data/content'
 import { SectionHead } from '../components/SectionHead'
-import { Marquee } from '../components/Marquee'
 
-export function Skills() {
+export function Capabilities() {
   const root = useRef(null)
 
   useLayoutEffect(() => {
@@ -78,8 +77,6 @@ export function Skills() {
           </article>
         ))}
       </div>
-
-      <Marquee items={MARQUEE} className="marquee--rule" speed={48} />
     </section>
   )
 }

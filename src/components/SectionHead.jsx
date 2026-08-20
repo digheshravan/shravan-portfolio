@@ -4,10 +4,9 @@ import { Reveal } from './Reveal'
  * Consistent section masthead: index, headline, optional note.
  *
  * No kicker label above the title — a label restating what the heading
- * already says ("Focus" over "Four fronts, one engineer") doesn't earn its
- * line. The index stays: on an instrument panel a numbered readout is part of
- * the vocabulary, not decoration, and the site's own section rail depends on
- * the same ordering.
+ * already says doesn't earn its line. The index stays: it's a numbered
+ * readout, not decoration, and the site's own section rail depends on the
+ * same ordering.
  */
 export function SectionHead({ index, title, note, align = 'left' }) {
   return (

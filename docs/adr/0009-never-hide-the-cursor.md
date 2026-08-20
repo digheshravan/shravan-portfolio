@@ -1,6 +1,6 @@
 # ADR 0009: The native cursor is never hidden
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0015 (its core rule — the native cursor is never hidden — is restated there, not overturned)
 - **Date:** 2026-08-05
 
 ## Context

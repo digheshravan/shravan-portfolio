@@ -1,11 +1,18 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/gsap'
 import { prefersReducedMotion } from '../lib/motionState'
-import { PROFILE, STATS } from '../data/content'
+import { PROFILE, STATS, DOMAINS } from '../data/content'
 import { Reveal } from '../components/Reveal'
 import { SectionHead } from '../components/SectionHead'
 
-export function About() {
+/**
+ * The section that carries the site's whole thesis: Computer Engineering ×
+ * AI × Data × Management isn't four separate interests, it's one MBA Tech
+ * degree read from four angles. The statement makes the claim in words: the
+ * quadrant below states it again as a diagram — the same shape the 3D
+ * system draws behind it (see SECTION_BEATS.about in data/scenes.js).
+ */
+export function Intersection() {
   const root = useRef(null)
 
   useLayoutEffect(() => {
@@ -35,7 +42,7 @@ export function About() {
       })
 
       // fromTo, never from: a bare from() treats the element's current state as
-      // its destination, so any invalidation (ScrollTrigger.refresh on font load
+      // its destination, and any invalidation (ScrollTrigger.refresh on font load
       // or resize) can bake the start pose in as the end pose and strand the
       // content at opacity 0. Naming both ends makes the tween self-describing.
       gsap.fromTo(
@@ -72,7 +79,7 @@ export function About() {
 
   return (
     <section className="section about" id="about" ref={root} data-panel>
-      <SectionHead index="02" title="The short version" />
+      <SectionHead index="02" title="Engineering × AI × Data × Management" />
 
       <div className="about__statement">
         <p className="about__text">
@@ -94,39 +101,14 @@ export function About() {
       </div>
 
       <div className="about__cards">
-        <article className="about__card">
-          <h3>
-            <Reveal>Engineering, priced like a decision</Reveal>
-          </h3>
-          <p>
-            MBA Tech pairs the Computer Engineering degree with a management stream — Bloomberg's
-            market and finance coursework sits in the same semesters as data structures. It shows
-            up as a habit: a feature gets asked what it costs and who it's for, not only whether
-            it compiles.
-          </p>
-        </article>
-
-        <article className="about__card">
-          <h3>
-            <Reveal>AI where it earns its place</Reveal>
-          </h3>
-          <p>
-            A model is a component with unusually interesting failure modes. The engineering is in
-            the boundaries around it — what you send, what you trust back, and what happens the
-            moment it is wrong.
-          </p>
-        </article>
-
-        <article className="about__card">
-          <h3>
-            <Reveal>One codebase, every screen</Reveal>
-          </h3>
-          <p>
-            Flutter for cross-platform delivery, Spring Boot and Angular where the web needs to be
-            first-class, React and WebGL when the interface itself is the argument. Chosen per
-            problem, not per habit.
-          </p>
-        </article>
+        {DOMAINS.map((d) => (
+          <article className="about__card" key={d.id}>
+            <h3>
+              <Reveal>{d.title}</Reveal>
+            </h3>
+            <p>{d.body}</p>
+          </article>
+        ))}
       </div>
     </section>
   )

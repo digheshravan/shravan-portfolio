@@ -26,163 +26,50 @@ button,
   .cursor {
     display: none;
   }
-
 }
 
-.cursor__reticle,
-.cursor__hud {
+.cursor__dot {
   position: absolute;
   top: 0;
   left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fg);
   /* Hidden until the pointer actually moves — under reduced motion the script
-     bails early and these must not sit parked in the corner. */
+     bails early and this must not sit parked in the corner. */
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: background-color 0.35s var(--e-out);
+}
+
+.cursor__dot[data-state='hover'],
+.cursor__dot[data-state='label'] {
+  background: var(--accent);
+}
+
+.cursor__labelWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
   opacity: 0;
   will-change: transform, opacity;
 }
 
-/* ---- Reticle ---- */
-
-.cursor__reticle {
-  width: 64px;
-  height: 64px;
-}
-
-.cursor__ring {
-  position: absolute;
-  inset: 15px;
-  border-radius: 50%;
-  border: 1px solid rgba(242, 239, 233, 0.42);
-  border-top-color: rgba(53, 224, 255, 0.9);
-  border-bottom-color: rgba(108, 92, 255, 0.75);
-  transition: border-color 0.4s var(--e-out);
-}
-
-.cursor__reticle[data-state='hover'] .cursor__ring,
-.cursor__reticle[data-state='label'] .cursor__ring {
-  border-color: rgba(53, 224, 255, 0.85);
-  border-top-color: #fff;
-}
-
-/* Crosshair arms. The transparent middle is what lets the real system cursor
-   read through the reticle instead of being buried by it. */
-.cursor__axis {
-  position: absolute;
-  background: linear-gradient(
-    var(--axis-angle, 90deg),
-    transparent 0%,
-    rgba(242, 239, 233, 0.5) 14%,
-    transparent 34%,
-    transparent 66%,
-    rgba(242, 239, 233, 0.5) 86%,
-    transparent 100%
-  );
-}
-
-.cursor__axis--x {
-  --axis-angle: 90deg;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1px;
-  transform: translateY(-50%);
-}
-
-.cursor__axis--y {
-  --axis-angle: 180deg;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  transform: translateX(-50%);
-}
-
-/* Corner brackets — the "locked on" tell. */
-.cursor__corner {
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border: 1px solid rgba(242, 239, 233, 0.34);
-  opacity: 0;
-  transition: opacity 0.4s var(--e-out), transform 0.5s var(--e-out);
-}
-
-.cursor__corner--tl {
-  top: 0;
-  left: 0;
-  border-right: 0;
-  border-bottom: 0;
-}
-.cursor__corner--tr {
-  top: 0;
-  right: 0;
-  border-left: 0;
-  border-bottom: 0;
-}
-.cursor__corner--bl {
-  bottom: 0;
-  left: 0;
-  border-right: 0;
-  border-top: 0;
-}
-.cursor__corner--br {
-  bottom: 0;
-  right: 0;
-  border-left: 0;
-  border-top: 0;
-}
-
-.cursor__reticle[data-state='hover'] .cursor__corner,
-.cursor__reticle[data-state='label'] .cursor__corner {
-  opacity: 1;
-  border-color: rgba(53, 224, 255, 0.7);
-}
-
-/* ---- Coordinate HUD ---- */
-
-.cursor__hud {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  padding: 0.45em 0.7em;
-  border-radius: 8px;
-  border: 1px solid var(--line-2);
-  background: rgba(8, 8, 10, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  font-family: var(--f-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-.cursor__coord {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35em;
-}
-
-.cursor__coord em {
-  font-style: normal;
-  color: var(--fg-4);
-  text-transform: uppercase;
-}
-
-.cursor__coord b {
-  font-weight: 400;
-  color: var(--fg-2);
-  font-variant-numeric: tabular-nums;
-}
-
-.cursor__hudLabel {
-  display: none;
-  padding-left: 0.7rem;
-  border-left: 1px solid var(--line-2);
-  color: var(--cyan);
-  text-transform: uppercase;
-}
-
-.cursor__hud[data-state='label'] .cursor__hudLabel {
+.cursor__label {
   display: inline-block;
+  padding: 0.32em 0.65em;
+  border-radius: 100px;
+  border: 1px solid var(--line-2);
+  background: rgba(8, 8, 10, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
@@ -237,8 +124,8 @@ button,
   font-family: var(--f-display);
   font-size: clamp(2rem, 6vw, 4.6rem);
   font-weight: 500;
-  font-variation-settings: 'wdth' 88;
-  letter-spacing: -0.03em;
+  /* Fraunces has no wdth axis; the old 'wdth' 88 nudge becomes tracking. */
+  letter-spacing: -0.04em;
   color: var(--fg);
 }
 
@@ -247,13 +134,23 @@ button,
   display: flex;
   align-items: baseline;
   gap: 0.2em;
-  font-family: var(--f-display);
+  /* A high-contrast serif at 74 width doesn't exist and shouldn't be faked
+     — this was the hard-condensed end of the old wdth axis, so it moves to
+     the body font at its own natural proportions instead. */
+  font-family: var(--f-body);
   font-size: clamp(3.5rem, 13vw, 11rem);
   font-weight: 800;
-  font-variation-settings: 'wdth' 74;
   line-height: 0.8;
   letter-spacing: -0.05em;
   font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  transition: color 0.6s var(--e-out);
+}
+
+/* The one moment this page is ever fully "resolved" before the visitor has
+   scrolled a pixel — the counter reaching 100 earns the accent early. */
+.preloader__counter.is-resolved {
+  color: var(--accent);
 }
 
 .preloader__counter em {
@@ -335,6 +232,9 @@ button,
 
 .nav__links a {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
   font-family: var(--f-mono);
   font-size: 0.68rem;
   letter-spacing: 0.14em;
@@ -343,6 +243,21 @@ button,
   overflow: hidden;
   padding: 0.2em 0;
   transition: color 0.45s var(--e-out);
+}
+
+.nav__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.4s var(--e-out), transform 0.4s var(--e-out);
+}
+
+.nav__links a.is-active .nav__dot {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .nav__links a::after {
@@ -371,28 +286,6 @@ button,
 
 .nav__aside {
   gap: clamp(0.8rem, 1.6vw, 1.6rem);
-}
-
-.nav__status,
-.nav__clock {
-  display: flex;
-  align-items: center;
-  font-family: var(--f-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--fg-3);
-  white-space: nowrap;
-}
-
-.nav__clock {
-  font-variant-numeric: tabular-nums;
-  gap: 0.4em;
-}
-
-.nav__clock em {
-  font-style: normal;
-  color: var(--fg-4);
 }
 
 .nav__burger {
@@ -469,8 +362,8 @@ button,
   font-family: var(--f-display);
   font-size: clamp(2.4rem, 9vw, 6rem);
   font-weight: 700;
-  font-variation-settings: 'wdth' 88;
-  letter-spacing: -0.04em;
+  /* Fraunces has no wdth axis; the old 'wdth' 88 nudge becomes tracking. */
+  letter-spacing: -0.05em;
   line-height: 1.02;
   color: var(--fg-3);
   transition: color 0.5s var(--e-out);
@@ -505,9 +398,7 @@ button,
 }
 
 @media (max-width: 900px) {
-  .nav__links,
-  .nav__status,
-  .nav__clock {
+  .nav__links {
     display: none;
   }
 
@@ -611,8 +502,8 @@ button,
 }
 
 .pill--live {
-  background: rgba(53, 224, 255, 0.12);
-  color: var(--cyan);
+  background: rgba(224, 71, 44, 0.12);
+  color: var(--accent-ink);
 }
 
 .pill--done {
@@ -620,9 +511,12 @@ button,
   color: var(--fg-3);
 }
 
+/* Deliberately neutral, not amber: under the one-accent system the accent
+   means "resolved," and "in development" is the opposite of that — so it
+   gets the same quiet treatment as --done rather than its own colour. */
 .pill--learning {
-  background: rgba(245, 165, 36, 0.12);
-  color: var(--learning);
+  background: rgba(242, 239, 233, 0.07);
+  color: var(--fg-3);
 }
 
 /* --------------------------------------------------------------------------
@@ -658,8 +552,8 @@ button,
 .sectionHead__title {
   font-size: clamp(2.2rem, 6.2vw, 5rem);
   font-weight: 700;
-  font-variation-settings: 'wdth' 90;
-  letter-spacing: -0.045em;
+  /* Fraunces has no wdth axis; the old 'wdth' 90 nudge becomes tracking. */
+  letter-spacing: -0.055em;
   line-height: 0.98;
 }
 
@@ -668,77 +562,6 @@ button,
   max-width: 44ch;
   font-size: clamp(0.95rem, 1.15vw, 1.08rem);
   color: var(--fg-2);
-}
-
-/* --------------------------------------------------------------------------
-   Marquee
-   -------------------------------------------------------------------------- */
-
-.band {
-  position: relative;
-  z-index: 3;
-  padding: clamp(2rem, 5vw, 3.5rem) 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: rgba(8, 8, 10, 0.55);
-  backdrop-filter: blur(6px);
-  display: grid;
-  gap: 0.5rem;
-}
-
-.marquee {
-  overflow: hidden;
-  width: 100%;
-}
-
-.marquee__track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-}
-
-.marquee__item {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--f-display);
-  font-size: clamp(1.8rem, 5.5vw, 4.2rem);
-  font-weight: 700;
-  font-variation-settings: 'wdth' 84;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-.marquee__sep {
-  display: inline-block;
-  margin: 0 0.45em;
-  font-family: var(--f-body);
-  font-size: 0.3em;
-  font-style: normal;
-  color: var(--vio);
-  vertical-align: middle;
-}
-
-.marquee--outline .marquee__item {
-  color: transparent;
-  -webkit-text-stroke: 1px var(--mark);
-  font-weight: 500;
-}
-
-.marquee--outline .marquee__sep {
-  color: var(--fg-4);
-  -webkit-text-stroke: 0;
-}
-
-.marquee--rule {
-  margin-top: clamp(3rem, 7vw, 5rem);
-  padding-top: 2rem;
-  border-top: 1px solid var(--line);
-}
-
-.marquee--rule .marquee__item {
-  font-size: clamp(1.1rem, 2.4vw, 1.9rem);
-  color: var(--fg-3);
 }
 
 /* --------------------------------------------------------------------------
@@ -763,7 +586,7 @@ button,
   width: 100%;
   transform: scaleX(0);
   transform-origin: left center;
-  background: var(--iri);
+  background: var(--accent);
   will-change: transform;
 }
 
@@ -854,494 +677,5 @@ button,
 @media (max-width: 1100px) {
   .rail {
     display: none;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Device mockups
-   -------------------------------------------------------------------------- */
-
-.mock {
-  --mock-bg: #0b0b11;
-  color: var(--fg);
-  user-select: none;
-}
-
-/* Phone -------------------------------------------------------------- */
-
-.mock--phone {
-  width: min(300px, 74vw);
-  margin-inline: auto;
-}
-
-.mock__frame {
-  position: relative;
-  border-radius: 34px;
-  padding: 9px;
-  background: linear-gradient(160deg, rgba(242, 239, 233, 0.16), rgba(242, 239, 233, 0.03));
-  box-shadow:
-    0 40px 90px -30px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(242, 239, 233, 0.06);
-}
-
-.mock__notch {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 78px;
-  height: 18px;
-  border-radius: 100px;
-  background: #000;
-  z-index: 2;
-}
-
-.mock__screen {
-  position: relative;
-  border-radius: 26px;
-  background: var(--mock-bg);
-  padding: 1.5rem 1rem 1rem;
-  overflow: hidden;
-  aspect-ratio: 9 / 18.5;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.mock__screen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(90% 55% at 50% 0%, rgba(108, 92, 255, 0.22), transparent 70%);
-  pointer-events: none;
-}
-
-.mock__statusbar {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.5rem;
-  letter-spacing: 0.08em;
-  color: var(--fg-3);
-}
-
-.mock__live {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  color: var(--cyan);
-}
-
-.mock__live i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.mock__appHead h4 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-}
-
-.mock__hello {
-  font-size: 0.6rem;
-  color: var(--fg-3);
-}
-
-.mock__tabs {
-  display: inline-flex;
-  gap: 2px;
-  margin-top: 0.6rem;
-  padding: 2px;
-  border-radius: 100px;
-  background: rgba(242, 239, 233, 0.05);
-}
-
-.mock__tabs span {
-  padding: 0.3em 0.9em;
-  border-radius: 100px;
-  font-size: 0.55rem;
-  letter-spacing: 0.06em;
-  color: var(--fg-3);
-}
-
-.mock__tabs .is-active {
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.mock__sectionLabel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  font-size: 0.5rem;
-  color: var(--fg-4);
-}
-
-.mock__pulse {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--cyan);
-  opacity: 0.7;
-}
-
-.mock__slots {
-  display: grid;
-  gap: 0.45rem;
-}
-
-.mock__slot {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.65rem;
-  border-radius: 12px;
-  background: rgba(242, 239, 233, 0.045);
-  border: 1px solid rgba(242, 239, 233, 0.05);
-}
-
-.mock__time {
-  font-size: 0.55rem;
-  color: var(--fg-2);
-}
-
-.mock__slotBody {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.mock__slotBody b {
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mock__slotBody em {
-  font-style: normal;
-  font-size: 0.5rem;
-  color: var(--fg-4);
-}
-
-.mock__state {
-  padding: 0.25em 0.55em;
-  border-radius: 100px;
-  font-size: 0.46rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.mock__state--confirmed {
-  background: rgba(53, 224, 255, 0.12);
-  color: var(--cyan);
-}
-
-.mock__state--pending {
-  background: rgba(255, 111, 181, 0.12);
-  color: var(--pink);
-}
-
-.mock__state--open {
-  background: rgba(242, 239, 233, 0.07);
-  color: var(--fg-3);
-}
-
-.mock__cta {
-  margin-top: auto;
-  text-align: center;
-  padding: 0.7em;
-  border-radius: 12px;
-  background: var(--fg);
-  color: var(--bg);
-  font-size: 0.62rem;
-  font-weight: 600;
-}
-
-/* Browser ------------------------------------------------------------ */
-
-.mock--browser {
-  width: min(620px, 100%);
-  border-radius: 14px;
-  overflow: hidden;
-  background: var(--mock-bg);
-  box-shadow:
-    0 40px 90px -30px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(242, 239, 233, 0.07);
-}
-
-.mockb__chrome {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.6rem 0.9rem;
-  background: rgba(242, 239, 233, 0.045);
-  border-bottom: 1px solid rgba(242, 239, 233, 0.06);
-}
-
-.mockb__dots {
-  display: flex;
-  gap: 5px;
-}
-
-.mockb__dots i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(242, 239, 233, 0.16);
-}
-
-.mockb__url {
-  font-size: 0.52rem;
-  letter-spacing: 0.06em;
-  text-transform: none;
-  color: var(--fg-4);
-}
-
-.mockb__body {
-  display: grid;
-  grid-template-columns: 84px 1fr;
-  min-height: 300px;
-}
-
-.mockb__side {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.9rem 0.6rem;
-  border-right: 1px solid rgba(242, 239, 233, 0.06);
-}
-
-.mockb__logo {
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  margin-bottom: 0.7rem;
-  border-radius: 7px;
-  background: var(--iri);
-  font-family: var(--f-display);
-  font-size: 0.55rem;
-  font-weight: 800;
-  color: #08080a;
-}
-
-.mockb__nav {
-  padding: 0.4em 0.55em;
-  border-radius: 6px;
-  font-size: 0.58rem;
-  color: var(--fg-4);
-}
-
-.mockb__nav.is-active {
-  background: rgba(242, 239, 233, 0.07);
-  color: var(--fg);
-}
-
-.mockb__main {
-  padding: 0.9rem;
-  display: grid;
-  gap: 0.8rem;
-  align-content: start;
-}
-
-.mockb__tiles {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-}
-
-.mockb__tile {
-  padding: 0.7rem;
-  border-radius: 10px;
-  background: rgba(242, 239, 233, 0.045);
-  border: 1px solid rgba(242, 239, 233, 0.05);
-  display: grid;
-  gap: 0.35rem;
-}
-
-.mockb__tile em {
-  font-size: 0.46rem;
-  font-style: normal;
-  color: var(--fg-4);
-}
-
-.mockb__tile b {
-  font-family: var(--f-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.mockb__table {
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(242, 239, 233, 0.05);
-}
-
-.mockb__head,
-.mockb__row {
-  display: grid;
-  grid-template-columns: 1.3fr 1.2fr 0.9fr 0.7fr;
-  gap: 0.5rem;
-  padding: 0.55rem 0.7rem;
-  align-items: center;
-  font-size: 0.56rem;
-}
-
-.mockb__head {
-  background: rgba(242, 239, 233, 0.045);
-  font-size: 0.46rem;
-  color: var(--fg-4);
-}
-
-.mockb__row {
-  border-top: 1px solid rgba(242, 239, 233, 0.045);
-  color: var(--fg-2);
-}
-
-.mockb__status {
-  justify-self: start;
-  padding: 0.2em 0.5em;
-  border: 1px solid rgba(242, 239, 233, 0.14);
-  border-radius: 100px;
-  font-size: 0.46rem;
-  letter-spacing: 0.05em;
-  color: var(--fg-3);
-}
-
-@media (max-width: 560px) {
-  .mockb__body {
-    grid-template-columns: 60px 1fr;
-  }
-
-  .mockb__tiles {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .mockb__head,
-  .mockb__row {
-    grid-template-columns: 1.2fr 1fr 0.8fr;
-  }
-
-  .mockb__head span:last-child,
-  .mockb__row span:last-child {
-    display: none;
-  }
-}
-
-/* DocMind: RAG chat -------------------------------------------------- */
-
-.mockd__chat {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.mockd__msg {
-  padding: 0.6rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.6rem;
-  line-height: 1.45;
-  max-width: 88%;
-}
-
-.mockd__msg--user {
-  justify-self: end;
-  background: rgba(242, 239, 233, 0.07);
-  color: var(--fg-2);
-  border-radius: 12px 12px 2px 12px;
-}
-
-.mockd__msg--ai {
-  justify-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  background: rgba(53, 224, 255, 0.07);
-  border: 1px solid rgba(53, 224, 255, 0.14);
-  color: var(--fg);
-  border-radius: 12px 12px 12px 2px;
-}
-
-.mockd__cite {
-  align-self: flex-start;
-  padding: 0.15em 0.5em;
-  border-radius: 100px;
-  font-size: 0.46rem;
-  letter-spacing: 0.06em;
-  color: var(--cyan);
-  background: rgba(53, 224, 255, 0.12);
-}
-
-/* IPO Risk Decoder: severity bars -------------------------------------- */
-
-.mockr__factors {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.mockr__factor {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr auto;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.mockr__label {
-  font-size: 0.56rem;
-  color: var(--fg-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mockr__bar {
-  position: relative;
-  height: 4px;
-  border-radius: 100px;
-  background: rgba(242, 239, 233, 0.08);
-  overflow: hidden;
-}
-
-.mockr__bar i {
-  position: absolute;
-  inset: 0;
-  width: 0%;
-  border-radius: 100px;
-  background: linear-gradient(90deg, var(--cyan), var(--pink));
-}
-
-.mockr__value {
-  font-size: 0.5rem;
-  color: var(--fg-4);
-  min-width: 2ch;
-  text-align: right;
-}
-
-@media (max-width: 560px) {
-  .mockr__factor {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: 'label value' 'bar bar';
-    row-gap: 0.3rem;
-  }
-
-  .mockr__label {
-    grid-area: label;
-  }
-
-  .mockr__value {
-    grid-area: value;
-  }
-
-  .mockr__bar {
-    grid-area: bar;
   }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { pointer, quality, damp } from '../lib/motionState'
+import { pointer, damp, prefersReducedMotion } from '../lib/motionState'
 
 export function useMediaQuery(query) {
   const [matches, setMatches] = useState(() =>
@@ -16,8 +16,9 @@ export function useMediaQuery(query) {
 }
 
 /**
- * Decides how much spectacle this device can actually afford, then writes the
- * verdict into the shared quality singleton so the Canvas can read it.
+ * Decides how much spectacle this device can actually afford. The verdict is
+ * returned (not written to a shared singleton) — Scene.jsx reads `tier`
+ * directly as a prop.
  */
 /** `?motion=full` opts back into the full experience, `?motion=reduced` out of it. */
 function motionOverride() {
@@ -36,30 +37,58 @@ export function useQualityTier() {
   const [tier, setTier] = useState('high')
 
   useEffect(() => {
-    const cores = navigator.hardwareConcurrency || 4
-    const memory = navigator.deviceMemory || 4
-    const weak = cores <= 4 || memory <= 4
+    // Unknown defaults to capable, not weak: hardwareConcurrency is absent
+    // on very old browsers, and deviceMemory is Chromium-only — Safari and
+    // Firefox never report it. Treating "we don't know" as "assume 4GB" was
+    // pinning every non-Chromium visitor to `low` regardless of hardware;
+    // memory only downgrades the tier when it's actually reported and low.
+    const cores = navigator.hardwareConcurrency ?? 8
+    const memory = navigator.deviceMemory
+    const weak = cores <= 4 || (memory !== undefined && memory <= 4)
 
     const next = reduced ? 'minimal' : small || weak ? 'low' : 'high'
     setTier(next)
-
-    quality.effects = next === 'high'
-    quality.dpr = next === 'high' ? 1.75 : next === 'low' ? 1.25 : 1
   }, [reduced, small])
 
   return { tier, reduced, coarse, small }
 }
 
-/** Global pointer tracking, eased, written into the shared singleton. */
+// How long the pointer can sit still before `pointer.active` clears itself —
+// generous enough that a normal reading pause doesn't flicker it off.
+const POINTER_IDLE_MS = 4000
+
+/** Global pointer tracking, eased, written into the shared singleton.
+ *  Nothing reads `pointer.ex/ey` under reduced motion — Cursor bails before
+ *  using them and the WebGL rig doesn't mount — so the loop doesn't start. */
 export function usePointerTracking() {
   useEffect(() => {
+    if (prefersReducedMotion()) return
+
     let raf = 0
     let last = performance.now()
+    let idleTimer = 0
+
+    const clearActive = () => {
+      clearTimeout(idleTimer)
+      pointer.active = false
+    }
 
     const onMove = (e) => {
       pointer.x = (e.clientX / window.innerWidth) * 2 - 1
       pointer.y = -((e.clientY / window.innerHeight) * 2 - 1)
-      pointer.active = true
+      // Touch fires pointermove too, mid-drag — only a real mouse or pen
+      // marks the pointer "active"; a touch interaction clears it instead
+      // (see onTouchStart below), the same way it never set it in the first
+      // place before this fix.
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+        pointer.active = true
+        clearTimeout(idleTimer)
+        idleTimer = setTimeout(clearActive, POINTER_IDLE_MS)
+      }
+    }
+
+    const onTouchStart = (e) => {
+      if (e.pointerType === 'touch') clearActive()
     }
 
     const loop = (now) => {
@@ -71,9 +100,19 @@ export function usePointerTracking() {
     }
 
     window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onTouchStart, { passive: true })
+    // pointerleave doesn't bubble, so window never sees it; document is the
+    // standard exit-intent target — it fires when the pointer leaves the
+    // browser's content area entirely.
+    document.addEventListener('pointerleave', clearActive)
+    window.addEventListener('blur', clearActive)
     raf = requestAnimationFrame(loop)
     return () => {
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onTouchStart)
+      document.removeEventListener('pointerleave', clearActive)
+      window.removeEventListener('blur', clearActive)
+      clearTimeout(idleTimer)
       cancelAnimationFrame(raf)
     }
   }, [])
