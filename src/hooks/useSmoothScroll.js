@@ -63,10 +63,17 @@ export function useSmoothScroll(enabled = true) {
   }, [enabled])
 }
 
-/** Anchor navigation that respects the smooth-scroll instance. */
+/**
+ * Anchor navigation that respects the smooth-scroll instance. Focus moves
+ * with the scroll — otherwise a keyboard user who picks "Contact" is left
+ * on a link that may have just been hidden (the closing menu) and their next
+ * Tab starts from the top of the page again.
+ */
 export function scrollToSection(target) {
   const el = typeof target === 'string' ? document.querySelector(target) : target
   if (!el) return
   if (lenisInstance) lenisInstance.scrollTo(el, { offset: 0, duration: 1.6 })
   else el.scrollIntoView({ behavior: 'smooth' })
+  if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1')
+  el.focus({ preventScroll: true })
 }

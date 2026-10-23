@@ -55,7 +55,7 @@ export function Experience() {
   return (
     <section className="section journey" id="journey" ref={root} data-panel>
       <SectionHead
-        index="05"
+        index="04"
         title="Where the work got real"
         note="A technical internship, applied — the education that led to it follows underneath."
       />
@@ -123,7 +123,7 @@ export function Experience() {
 
         <div className="support__list">
           {RECOGNITION.map((r) => (
-            <div className="support__row" key={r.title} data-cursor>
+            <div className="support__row" key={r.title}>
               <span className="support__year mono">{r.year}</span>
               <span className="support__title">{r.title}</span>
               <span className="support__sub">{r.subtitle}</span>

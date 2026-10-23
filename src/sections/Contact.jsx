@@ -10,12 +10,15 @@ const LINKS = [
   { label: 'Phone', value: PROFILE.phone, href: `tel:${PROFILE.phoneHref}` },
   { label: 'LinkedIn', value: '/in/shravan-dige', href: PROFILE.linkedin, external: true },
   { label: 'GitHub', value: '@digheshravan', href: PROFILE.github, external: true },
-  { label: 'Résumé', value: 'Download PDF', href: PROFILE.resume, external: true },
+  // It opens in a new tab, so it says "Open", not "Download".
+  { label: 'Résumé', value: 'Open PDF', href: PROFILE.resume, external: true },
 ]
 
 export function Contact() {
   const root = useRef(null)
-  const [copied, setCopied] = useState(false)
+  // 'idle' | 'copied' | 'failed' — announced through the live region below,
+  // since a screen reader won't reliably read a button relabelling itself.
+  const [copyState, setCopyState] = useState('idle')
 
   useLayoutEffect(() => {
     const el = root.current
@@ -67,11 +70,13 @@ export function Contact() {
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(PROFILE.email)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setCopyState('copied')
     } catch {
-      // Clipboard can be blocked; the mailto link is still right there.
+      // Clipboard can be blocked; say so rather than failing silently — the
+      // address is right beside the button to copy by hand.
+      setCopyState('failed')
     }
+    setTimeout(() => setCopyState('idle'), 2500)
   }
 
   return (
@@ -96,7 +101,7 @@ export function Contact() {
             <a
               className="contact__mail"
               href={`mailto:${PROFILE.email}`}
-              data-cursor-label="Write"
+              data-cursor-label="Email"
             >
               <span data-magnetic-inner>
                 {PROFILE.email}
@@ -106,8 +111,15 @@ export function Contact() {
           </Magnetic>
 
           <button className="contact__copy" onClick={copyEmail} data-cursor>
-            {copied ? 'Copied' : 'Copy address'}
+            {copyState === 'copied' ? 'Copied' : copyState === 'failed' ? 'Copy blocked' : 'Copy address'}
           </button>
+          <span className="sr-only" role="status">
+            {copyState === 'copied'
+              ? 'Email address copied'
+              : copyState === 'failed'
+                ? 'Copy was blocked by the browser — select the address to copy it'
+                : ''}
+          </span>
         </div>
 
         <div className="contact__links">
@@ -121,7 +133,10 @@ export function Contact() {
               data-cursor
             >
               <span className="contact__rowLabel mono">{l.label}</span>
-              <span className="contact__rowValue">{l.value}</span>
+              <span className="contact__rowValue">
+                {l.value}
+                {l.external && <span className="sr-only"> (opens in new tab)</span>}
+              </span>
               <span className="contact__rowArrow" aria-hidden="true">
                 <svg viewBox="0 0 16 16" width="16" height="16">
                   <path

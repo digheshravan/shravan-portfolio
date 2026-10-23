@@ -81,7 +81,6 @@ export default function App() {
       <Grain />
       <Cursor />
       <ScrollProgress />
-      <SectionRail />
 
       <Nav ready={ready} />
 
@@ -94,6 +93,11 @@ export default function App() {
         <Experience />
         <Contact />
       </main>
+
+      {/* Fixed on screen, so its DOM position only decides tab order: after
+          the content, as the supplementary navigation it is — not six stops
+          ahead of the primary nav. */}
+      <SectionRail />
     </>
   )
 }

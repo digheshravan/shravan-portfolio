@@ -50,22 +50,6 @@ export function ScrollProgress() {
  */
 export function SectionRail() {
   const [active, setActive] = useState(0)
-  const pctRef = useRef(null)
-
-  useEffect(() => {
-    const pct = pctRef.current
-    if (!pct) return
-    let last = -1
-    const tick = () => {
-      const v = Math.round(scroll.progress * 100)
-      if (v !== last) {
-        last = v
-        pct.textContent = String(v).padStart(3, '0')
-      }
-    }
-    gsap.ticker.add(tick)
-    return () => gsap.ticker.remove(tick)
-  }, [])
 
   useLayoutEffect(() => {
     const triggers = NAV.map(({ href }, i) => {
@@ -83,11 +67,9 @@ export function SectionRail() {
   }, [])
 
   return (
+    // No percentage readout or section count: the top progress bar already
+    // says how far in you are, and three position indicators is two too many.
     <nav className="rail" aria-label="Section navigation">
-      <span className="rail__pct mono" ref={pctRef}>
-        000
-      </span>
-
       <ul className="rail__list">
         {NAV.map(({ label, href }, i) => (
           <li key={href}>
@@ -103,8 +85,6 @@ export function SectionRail() {
           </li>
         ))}
       </ul>
-
-      <span className="rail__count mono">{String(NAV.length).padStart(2, '0')}</span>
     </nav>
   )
 }

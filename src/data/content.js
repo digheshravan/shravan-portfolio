@@ -162,7 +162,6 @@ export const PROJECTS = [
     metrics: [
       { k: 'Input', v: 'DRHP filings' },
       { k: 'Output', v: 'Risk score · benchmark' },
-      { k: 'Stage', v: 'In development' },
     ],
   },
   {
@@ -313,11 +312,13 @@ export const RECOGNITION = [
   },
 ]
 
+// Plain labels, the words a recruiter scans a nav for — not the section
+// headlines' own voice ("Craft", "Path"), which read as clever, not clear.
 export const NAV = [
-  { label: 'Index', href: '#hero' },
+  { label: 'Home', href: '#hero' },
   { label: 'About', href: '#about' },
-  { label: 'Craft', href: '#skills' },
-  { label: 'Work', href: '#work' },
-  { label: 'Path', href: '#journey' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Projects', href: '#work' },
+  { label: 'Experience', href: '#journey' },
   { label: 'Contact', href: '#contact' },
 ]

@@ -6,6 +6,11 @@ import { PROJECT_SCENES } from '../data/scenes'
 import { beginCase, scrubCase, animateToBeat } from '../lib/sceneState'
 import { SectionHead } from '../components/SectionHead'
 import { Magnetic } from '../components/Magnetic'
+import { scrollToSection } from '../hooks/useSmoothScroll'
+
+// Pinned scroll per pipeline step, as a fraction of the viewport. Was 1.0,
+// which made Work 73% of the whole page's scroll length.
+const STEP_SCREENS = 0.4
 
 /**
  * Four pinned case studies, one ScrollTrigger per project. Each pin holds
@@ -103,11 +108,13 @@ export function Work() {
 
           // offsetHeight, not scrollWidth/scrollHeight: this section applies
           // no transform of its own, but the discipline stays uniform with
-          // every other measured trigger on the page. One "screen" of
-          // scroll per pipeline step, so a 6-step pipeline (IPO Decoder)
-          // genuinely gets more room to read than a 4-step one.
+          // every other measured trigger on the page. STEP_SCREENS of a
+          // screen per pipeline step, so a 6-step pipeline (IPO Decoder)
+          // still gets more room than a 4-step one — but the four pins no
+          // longer cost a reader fifteen screens before Experience.
           const distance = () =>
-            Math.max(1, beats.length - 1) * caseEl.offsetHeight || document.documentElement.clientHeight
+            Math.max(1, beats.length - 1) * caseEl.offsetHeight * STEP_SCREENS ||
+            document.documentElement.clientHeight
 
           return ScrollTrigger.create({
             trigger: caseEl,
@@ -165,10 +172,24 @@ export function Work() {
   return (
     <section className="section work" id="work" ref={root}>
       <SectionHead
-        index="04"
+        index="03"
         title="Four systems, one still in the lab"
         note="Scroll to run each pipeline — the scene reconfigures as it goes."
       />
+
+      {/* The pins below are long by design; a reader after the CV shouldn't
+          have to sit through all four to reach it. */}
+      <a
+        className="work__skip mono"
+        href="#journey"
+        onClick={(e) => {
+          e.preventDefault()
+          scrollToSection('#journey')
+        }}
+      >
+        Skip to experience
+        <span aria-hidden="true">↓</span>
+      </a>
 
       <div className="cases" ref={stage}>
         {PROJECTS.map((project) => (
@@ -178,22 +199,20 @@ export function Work() {
                 <span>{project.id}</span>
                 <i />
                 <span>{project.year}</span>
-                {project.flagship && (
-                  <>
-                    <i />
-                    <span className="pill pill--live">Flagship</span>
-                  </>
-                )}
-                {project.stage && (
-                  <>
-                    <i />
-                    <span className="pill pill--learning">{project.stage}</span>
-                  </>
-                )}
+                {/* No dot separators before the pills: their own fill sets them
+                    apart, and a dot left at a line end looked broken once the
+                    row wraps on narrow phones. */}
+                {project.flagship && <span className="pill pill--live">Flagship</span>}
+                {project.stage && <span className="pill pill--learning">{project.stage}</span>}
               </p>
 
               <h3 className="case__title">{project.title}</h3>
               <p className="case__kind mono">{project.kind}</p>
+
+              {/* What it is comes before the numbers and the button — on a
+                  phone the stacked card is long enough that leading with
+                  metrics meant reading a status note before the project. */}
+              <p className="case__blurb">{project.summary}</p>
 
               <div className="case__metrics">
                 {project.metrics.map((m) => (
@@ -216,6 +235,7 @@ export function Work() {
                     >
                       <span data-magnetic-inner>
                         View the code
+                        <span className="sr-only"> (opens in new tab)</span>
                         <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
                           <path
                             d="M3 13L13 3M13 3H5M13 3v8"
@@ -230,14 +250,11 @@ export function Work() {
                     </a>
                   </Magnetic>
                 ) : (
-                  <p className="case__footNote">
-                    Still in development — not public yet. The repository goes live here once it
-                    ships.
-                  </p>
+                  // The "In development" pill already states the status; this
+                  // only explains why there is no button.
+                  <p className="case__footNote">The repository goes public here once it ships.</p>
                 )}
               </div>
-
-              <p className="case__blurb">{project.summary}</p>
 
               <ol className="case__pipeline mono" aria-label={`${project.title} pipeline`}>
                 {project.pipeline.map((step, i) => (
@@ -277,6 +294,7 @@ export function Work() {
             >
               <span data-magnetic-inner>
                 Browse the code
+                <span className="sr-only"> (opens in new tab)</span>
                 <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
                   <path
                     d="M3 13L13 3M13 3H5M13 3v8"

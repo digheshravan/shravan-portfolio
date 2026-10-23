@@ -5,9 +5,29 @@ import { PROFILE } from '../data/content'
 
 const WORDS = ['Namaste', 'नमस्ते', 'Hello', 'Bonjour', 'こんにちは', 'Hola']
 
+const SEEN_KEY = 'sd:intro-seen'
+
+/** Session storage can throw (private mode, blocked site data) — never let
+ *  that decide whether the page is reachable. */
+function introSeen() {
+  try {
+    const seen = sessionStorage.getItem(SEEN_KEY) === '1'
+    sessionStorage.setItem(SEEN_KEY, '1')
+    return seen
+  } catch {
+    return false
+  }
+}
+
+// Read once per page load, not per effect run — StrictMode's double-mount
+// would otherwise see its own write and skip the intro on a first visit.
+const INTRO_SEEN = introSeen()
+
 /**
- * The first four seconds set the tone for everything after them.
- * Counter → greeting cycle → column wipe, then the hero takes over.
+ * Counter → greeting cycle → column wipe, then the hero takes over — compressed
+ * to under a second before the hero starts, and skipped entirely on a repeat
+ * visit in the same session. A visitor (often a recruiter on a short clock)
+ * should be looking at the name and the Résumé button, not a loader.
  */
 export function Preloader({ onComplete }) {
   const root = useRef(null)
@@ -20,7 +40,13 @@ export function Preloader({ onComplete }) {
 
     document.documentElement.classList.add('is-loading')
 
-    const reduced = prefersReducedMotion()
+    // Nothing behind the overlay is reachable by Tab while it covers them.
+    const behind = ['.main', '.nav', '.rail']
+      .map((s) => document.querySelector(s))
+      .filter(Boolean)
+    behind.forEach((n) => (n.inert = true))
+
+    const skip = prefersReducedMotion() || INTRO_SEEN
     const counterObj = { v: 0 }
 
     // The whole site sits behind this overlay, so finishing must not depend on
@@ -32,22 +58,33 @@ export function Preloader({ onComplete }) {
     // `finish` is therefore idempotent and can be called from anywhere: the
     // timeline's own completion, a wall-clock watchdog, or the moment the tab
     // becomes visible again after being throttled.
+    // The hero is handed control as the wipe *starts* (`reveal`), so its
+    // intro plays while the columns lift instead of after them; `finish`
+    // removes the overlay itself once the wipe is done.
+    let revealed = false
+    const reveal = () => {
+      if (revealed) return
+      revealed = true
+      behind.forEach((n) => (n.inert = false))
+      onComplete?.()
+    }
+
     let done = false
     const finish = () => {
       if (done) return
       done = true
       document.documentElement.classList.remove('is-loading')
       if (root.current) root.current.style.display = 'none'
-      onComplete?.()
+      reveal()
     }
 
     // setTimeout keeps running when rAF does not, which is exactly why the
     // escape hatch uses it rather than another animation callback.
-    const watchdog = setTimeout(finish, reduced ? 200 : 6000)
+    const watchdog = setTimeout(finish, skip ? 200 : 3000)
 
     // Coming back to a throttled tab: don't make them wait out the watchdog.
     const onVisible = () => {
-      if (document.visibilityState === 'visible' && performance.now() > 6000) finish()
+      if (document.visibilityState === 'visible' && performance.now() > 3000) finish()
     }
     document.addEventListener('visibilitychange', onVisible)
 
@@ -56,49 +93,50 @@ export function Preloader({ onComplete }) {
 
       // `el` is the context root, so it can't be reached by a descendant
       // selector — every reference to the shell itself has to go through the ref.
-      if (reduced) {
+      if (skip) {
         tl.set(el, { display: 'none' })
         return
       }
 
       tl.to(counterObj, {
         v: 100,
-        duration: 2.4,
+        duration: 0.8,
         ease: 'in-out-quint',
         onUpdate: () => setCount(Math.round(counterObj.v)),
       })
         .fromTo(
           '.preloader__word',
           { yPercent: 110, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: 0.5, stagger: 0.24, ease: 'power3.out' },
-          0.1
+          { yPercent: 0, opacity: 1, duration: 0.22, stagger: 0.09, ease: 'power3.out' },
+          0.05
         )
         .to(
           '.preloader__word',
-          { yPercent: -110, opacity: 0, duration: 0.5, stagger: 0.24, ease: 'power3.in' },
-          0.34
+          { yPercent: -110, opacity: 0, duration: 0.22, stagger: 0.09, ease: 'power3.in' },
+          0.14
         )
-        .to('.preloader__meta, .preloader__counter', {
-          yPercent: -120,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.06,
-        })
+        .to(
+          '.preloader__meta, .preloader__counter',
+          { yPercent: -120, opacity: 0, duration: 0.4, stagger: 0.04 },
+          0.78
+        )
+        .call(reveal, [], 0.85)
         .to(
           '.preloader__col',
           {
             scaleY: 0,
             transformOrigin: 'top center',
-            duration: 1.25,
-            stagger: { each: 0.07, from: 'start' },
+            duration: 0.75,
+            stagger: { each: 0.04, from: 'start' },
             ease: 'in-out-quint',
           },
-          '-=0.3'
+          0.85
         )
         .set(el, { display: 'none' })
     }, el)
 
     return () => {
+      behind.forEach((n) => (n.inert = false))
       clearTimeout(watchdog)
       document.removeEventListener('visibilitychange', onVisible)
       ctx.revert()

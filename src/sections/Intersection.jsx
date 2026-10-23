@@ -79,7 +79,7 @@ export function Intersection() {
 
   return (
     <section className="section about" id="about" ref={root} data-panel>
-      <SectionHead index="02" title="Engineering × AI × Data × Management" />
+      <SectionHead index="01" title="Engineering × AI × Data × Management" />
 
       <div className="about__statement">
         <p className="about__text">

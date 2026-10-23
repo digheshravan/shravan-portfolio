@@ -80,7 +80,7 @@
 
 .hero__subtitle {
   margin: clamp(1.2rem, 2.4vw, 1.8rem) 0 clamp(1.8rem, 3.2vw, 2.6rem);
-  font-size: clamp(0.68rem, 0.85vw, 0.8rem);
+  font-size: clamp(var(--t-micro), 0.85vw, 0.8rem);
   letter-spacing: 0.16em;
   color: var(--fg-3);
 }
@@ -138,7 +138,8 @@
   inset: 0;
   background: var(--fg);
   transform-origin: top center;
-  animation: cueDrop 2.2s var(--e-inout) infinite;
+  /* Three drops, then rest — see .dot in base.css. */
+  animation: cueDrop 2.2s var(--e-inout) 3;
 }
 
 @keyframes cueDrop {
@@ -200,8 +201,11 @@
   text-wrap: pretty;
 }
 
+/* Words not yet read rest at 0.5, not lower: 0.5 is the floor that keeps them
+   at 4.5:1 (4.77:1 measured), so the statement is legible at any scroll
+   position and the scrub only brightens it rather than revealing it. */
 .about__w {
-  opacity: 0.16;
+  opacity: 0.5;
   will-change: opacity;
 }
 
@@ -233,7 +237,7 @@
 }
 
 .about__statLabel {
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
 }
 
 .about__cards {
@@ -359,12 +363,9 @@
   transform: scaleY(1);
 }
 
-
-/* Sibling dimming without a line of JavaScript. Hovering one row quietens the
-   others so the list reads as a focus, not as four competing blocks. */
-.skills__list:has(.skillRow:hover) .skillRow:not(:hover) {
-  opacity: 0.26;
-}
+/* No sibling dimming: fading the other rows to 0.26 put their text at
+   1.4:1 (WCAG 1.4.3 needs 4.5:1), and the wash, accent bar and indent above
+   already single out the hovered row without taking the rest away. */
 
 /* ---- Left column: index + title ---- */
 
@@ -375,7 +376,7 @@
 }
 
 .skillRow__index {
-  font-size: 0.62rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   color: var(--fg-4);
   transition: color 0.5s var(--e-out), transform 0.5s var(--e-out);
@@ -436,7 +437,7 @@
   border: 1px solid var(--line);
   border-radius: 8px;
   font-family: var(--f-mono);
-  font-size: 0.66rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.05em;
   color: var(--fg-3);
   background: rgba(242, 239, 233, 0.02);
@@ -459,7 +460,7 @@
 /* ---- Count ---- */
 
 .skillRow__count {
-  font-size: 0.62rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.14em;
   color: var(--fg-4);
   padding-top: 0.4em;
@@ -528,7 +529,7 @@
 
 @media (max-width: 620px) {
   .skillRow__items li {
-    font-size: 0.62rem;
+    font-size: var(--t-micro);
     padding: 0.38em 0.7em;
   }
 
@@ -567,6 +568,28 @@
    Work — one pinned case study per project (ADR-0017)
    -------------------------------------------------------------------------- */
 
+/* The skip link takes over the masthead's bottom margin, so it reads as part
+   of the section's introduction rather than floating above the first case. */
+.work .sectionHead {
+  margin-bottom: 1.6rem;
+}
+
+.work__skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  margin-bottom: clamp(3rem, 7vw, 6rem);
+  color: var(--fg-2);
+  border-bottom: 1px solid var(--line-2);
+  transition: color 0.4s var(--e-out), border-color 0.4s var(--e-out);
+}
+
+.work__skip:hover {
+  color: var(--fg);
+  border-color: var(--fg-3);
+}
+
 .cases {
   position: relative;
   margin-top: clamp(2.5rem, 6vw, 5rem);
@@ -590,9 +613,10 @@
 
 .case__meta {
   display: flex;
+  flex-wrap: wrap; /* two pills overflowed the card by 50px at 320px */
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.6rem;
+  gap: 0.5rem 0.6rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-4);
@@ -616,7 +640,7 @@
 
 .case__kind {
   margin-top: 0.5rem;
-  font-size: 0.62rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-4);
@@ -647,7 +671,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.62rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg-4);
@@ -656,10 +680,6 @@
 
 .case__step.is-active {
   color: var(--accent-ink);
-}
-
-.case__stepIndex {
-  opacity: 0.6;
 }
 
 .case__metrics {
@@ -679,7 +699,7 @@
 
 .case__metrics em {
   font-style: normal;
-  font-size: 0.56rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-4);
@@ -848,7 +868,7 @@ html.reduced-motion .case--end {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  font-size: 0.62rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1044,7 +1064,7 @@ html.reduced-motion .case--end {
 }
 
 .support__tag {
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
   color: var(--fg-4);
 }
 
@@ -1184,7 +1204,7 @@ html.reduced-motion .case--end {
   border: 1px solid var(--line-2);
   border-radius: 100px;
   font-family: var(--f-mono);
-  font-size: 0.64rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--fg-3);

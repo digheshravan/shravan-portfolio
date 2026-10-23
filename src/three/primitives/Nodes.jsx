@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { sysCommon } from '../shaders/system.glsl.js'
@@ -72,6 +72,7 @@ const frag = /* glsl */ `
 `
 
 export function Nodes({ count = 40 }) {
+  const mat = useRef(null)
   const idx = useMemo(() => Float32Array.from({ length: count }, (_, i) => i), [count])
 
   const uniforms = useMemo(
@@ -89,9 +90,11 @@ export function Nodes({ count = 40 }) {
     []
   )
 
+  // The material's own uniforms, not `uniforms` — see Rows.jsx.
   useFrame((_, delta) => {
+    const u = mat.current?.uniforms
+    if (!u) return
     const dt = Math.min(delta, 0.05)
-    const u = uniforms
     u.uTime.value += dt
     u.uFormA.value = scene.nodes.formA
     u.uFormB.value = scene.nodes.formB
@@ -107,6 +110,7 @@ export function Nodes({ count = 40 }) {
         <instancedBufferAttribute attach="attributes-aIdx" args={[idx, 1]} />
       </planeGeometry>
       <shaderMaterial
+        ref={mat}
         vertexShader={vert}
         fragmentShader={frag}
         uniforms={uniforms}

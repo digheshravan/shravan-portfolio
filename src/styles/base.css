@@ -46,6 +46,10 @@
   --f-body: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
   --f-mono: 'JetBrains Mono', ui-monospace, monospace;
 
+  /* The floor for every small label, chip and pill: 11px, Apple's minimum
+     on phones (10pt on desktop). The mono labels used to bottom out at 9px. */
+  --t-micro: 0.6875rem;
+
   /* Layout */
   --gutter: clamp(20px, 4.2vw, 72px);
   --maxw: 1600px;
@@ -187,7 +191,7 @@ ol {
 
 .mono {
   font-family: var(--f-mono);
-  font-size: clamp(0.62rem, 0.72vw, 0.75rem);
+  font-size: clamp(var(--t-micro), 0.72vw, 0.75rem);
   font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -223,7 +227,9 @@ h4 {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 0 0 rgba(224, 71, 44, 0.55);
-  animation: pulse 2.6s var(--e-out) infinite;
+  /* A few beats to draw the eye, then still — endless motion beside text is
+     what WCAG 2.2.2 asks a page to let people stop. */
+  animation: pulse 2.6s var(--e-out) 3;
   margin-right: 0.55em;
   vertical-align: middle;
 }
@@ -361,27 +367,14 @@ h4 {
   pointer-events: none;
   opacity: 0.13;
   mix-blend-mode: overlay;
-  animation: grainShift 0.9s steps(3) infinite;
+  /* Static on purpose. It used to jitter forever (0.9s steps), which read as
+     texture no better than this does while repainting a layer twice the size
+     of the viewport and running beside the text with no way to stop it. */
 }
 
 .grain svg {
   width: 100%;
   height: 100%;
-}
-
-@keyframes grainShift {
-  0% {
-    transform: translate(0, 0);
-  }
-  33% {
-    transform: translate(-2%, 1.5%);
-  }
-  66% {
-    transform: translate(1.5%, -1%);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
 }
 
 /* --------------------------------------------------------------------------
@@ -397,10 +390,6 @@ h4 {
     transition-duration: 0.01ms !important;
   }
 
-  .grain {
-    animation: none;
-  }
-
   html {
     scroll-behavior: smooth;
   }
@@ -410,4 +399,10 @@ h4 {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
+}
+
+/* Sections only take focus programmatically, as a landing point for in-page
+   navigation (scrollToSection) — a page-sized ring there is noise. */
+section[tabindex='-1']:focus {
+  outline: none;
 }

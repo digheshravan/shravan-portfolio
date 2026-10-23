@@ -38,14 +38,19 @@ export function Nav({ ready }) {
     if (!ready) return
     const el = root.current
     const reduced = prefersReducedMotion()
+    let onFocus = null
     const ctx = gsap.context(() => {
       if (!reduced) {
         const show = gsap.quickTo(el, 'yPercent', { duration: 0.6, ease: 'out-expo' })
+        // A keyboard user tabbing onto a hidden bar must see where focus
+        // went: bring it back on focus, and don't hide it while focus is in it.
+        onFocus = () => show(0)
+        el.addEventListener('focusin', onFocus)
         ScrollTrigger.create({
           start: 'top -120',
           end: 'max',
           onUpdate: (self) => {
-            if (open) return show(0)
+            if (open || el.contains(document.activeElement)) return show(0)
             show(self.direction === 1 && self.scroll() > 400 ? -140 : 0)
           },
         })
@@ -62,15 +67,48 @@ export function Nav({ ready }) {
         })
       })
     }, el)
-    return () => ctx.revert()
+    return () => {
+      if (onFocus) el.removeEventListener('focusin', onFocus)
+      ctx.revert()
+    }
   }, [ready, open])
 
-  // Freeze the page behind the overlay menu.
+  // Freeze the page behind the overlay menu. The class has to be set even
+  // without Lenis (reduced motion) — it's also what lifts the burger above
+  // the overlay and locks native scroll.
   useEffect(() => {
     const lenis = getLenis()
-    if (!lenis) return
-    open ? lenis.stop() : lenis.start()
+    if (lenis) open ? lenis.stop() : lenis.start()
     document.documentElement.classList.toggle('menu-open', open)
+  }, [open])
+
+  // While the menu is open it behaves like a modal: everything behind it is
+  // inert (so Tab can't wander onto controls the overlay hides), Escape
+  // closes it, and focus goes in on open and back to the burger on close.
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    const behind = [document.querySelector('.main'), document.querySelector('.rail')].filter(Boolean)
+    behind.forEach((el) => (el.inert = open))
+
+    if (open) {
+      wasOpen.current = true
+      document.querySelector('.menu__link')?.focus({ preventScroll: true })
+      const onKey = (e) => e.key === 'Escape' && setOpen(false)
+      document.addEventListener('keydown', onKey)
+      return () => document.removeEventListener('keydown', onKey)
+    }
+
+    // Only reclaim focus if it was stranded inside the closing menu (or
+    // dropped to <body>) — a menu link's own navigation moves it to its
+    // section, and that should win.
+    if (wasOpen.current) {
+      wasOpen.current = false
+      const a = document.activeElement
+      // Queried rather than ref'd: <Magnetic> clones the button with its own ref.
+      if (!a || a === document.body || a.closest('.menu')) {
+        document.querySelector('.nav__burger')?.focus()
+      }
+    }
   }, [open])
 
   const go = (e, href) => {
@@ -115,6 +153,7 @@ export function Nav({ ready }) {
               className={`nav__burger ${open ? 'is-open' : ''}`}
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
+              aria-controls="site-menu"
               aria-label={open ? 'Close menu' : 'Open menu'}
             >
               <span data-magnetic-inner>
@@ -171,15 +210,19 @@ function Menu({ open, onNavigate }) {
   useEffect(() => {
     const t = tl.current
     if (!t) return
-    if (open) t.play()
-    else
+    if (open) {
+      // Visible now, not on the timeline's first tick, so Nav can move focus
+      // into the menu in the same commit.
+      gsap.set(root.current, { pointerEvents: 'auto', visibility: 'visible' })
+      t.play()
+    } else
       t.reverse().eventCallback('onReverseComplete', () =>
         gsap.set(root.current, { pointerEvents: 'none', visibility: 'hidden' })
       )
   }, [open])
 
   return (
-    <div className="menu" ref={root} aria-hidden={!open}>
+    <div className="menu" id="site-menu" ref={root} aria-hidden={!open}>
       <div className="menu__bg" />
       <div className="menu__inner">
         <ul className="menu__list">
@@ -195,13 +238,13 @@ function Menu({ open, onNavigate }) {
         <div className="menu__foot">
           <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
           <a href={PROFILE.github} target="_blank" rel="noreferrer">
-            GitHub
+            GitHub<span className="sr-only"> (opens in new tab)</span>
           </a>
           <a href={PROFILE.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn
+            LinkedIn<span className="sr-only"> (opens in new tab)</span>
           </a>
           <a href={PROFILE.resume} target="_blank" rel="noreferrer">
-            Résumé
+            Résumé<span className="sr-only"> (opens in new tab)</span>
           </a>
         </div>
       </div>

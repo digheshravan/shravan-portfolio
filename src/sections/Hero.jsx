@@ -36,28 +36,21 @@ export function Hero({ ready }) {
       gsap.set('.hero__aside > *', { y: 34, opacity: 0 })
       gsap.set('.hero__cue', { y: 20, opacity: 0 })
 
+      // Absolute positions, about a second end to end: the lede and the
+      // two buttons are what a visitor came for, so they land early and in
+      // parallel with the name rather than queued behind it.
       const tl = gsap.timeline({ defaults: { ease: 'out-expo' } })
 
-      tl.to('.hero__eyebrow > *', {
-        yPercent: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.08,
-      })
+      tl.to('.hero__eyebrow > *', { yPercent: 0, opacity: 1, duration: 0.7, stagger: 0.05 }, 0)
         .to(
           '.hero__glyph',
-          {
-            yPercent: 0,
-            rotate: 0,
-            duration: 1.5,
-            stagger: { each: 0.045, from: 'start' },
-          },
-          '-=0.7'
+          { yPercent: 0, rotate: 0, duration: 1, stagger: { each: 0.025, from: 'start' } },
+          0.05
         )
-        .to('.hero__rule', { scaleX: 1, duration: 1.4 }, '-=1.0')
-        .to('.hero__subtitle', { y: 0, opacity: 1, duration: 0.9 }, '-=1.0')
-        .to('.hero__aside > *', { y: 0, opacity: 1, duration: 1.1, stagger: 0.09 }, '-=1.0')
-        .to('.hero__cue', { y: 0, opacity: 1, duration: 0.9 }, '-=0.9')
+        .to('.hero__aside > *', { y: 0, opacity: 1, duration: 0.7, stagger: 0.06 }, 0.15)
+        .to('.hero__rule', { scaleX: 1, duration: 0.9 }, 0.2)
+        .to('.hero__subtitle', { y: 0, opacity: 1, duration: 0.6 }, 0.25)
+        .to('.hero__cue', { y: 0, opacity: 1, duration: 0.6 }, 0.4)
 
       // Departure: the hero tips away from the viewer and falls into depth as
       // About rises to meet it. Perspective is set on the element itself so the
@@ -145,7 +138,7 @@ export function Hero({ ready }) {
                 <button
                   className="btn btn--primary"
                   onClick={() => scrollToSection('#work')}
-                  data-cursor-label="See"
+                  data-cursor-label="Projects"
                 >
                   <span data-magnetic-inner>
                     View work
@@ -169,9 +162,12 @@ export function Hero({ ready }) {
                   href={PROFILE.resume}
                   target="_blank"
                   rel="noreferrer"
-                  data-cursor-label="Get"
+                  data-cursor-label="PDF"
                 >
-                  <span data-magnetic-inner>Resume</span>
+                  <span data-magnetic-inner>
+                    Résumé
+                    <span className="sr-only"> (opens in new tab)</span>
+                  </span>
                 </a>
               </Magnetic>
             </div>

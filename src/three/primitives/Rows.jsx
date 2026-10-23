@@ -252,9 +252,14 @@ export function Rows({ count = 2048 }) {
     []
   )
 
+  // Write to the material's own uniforms, not the memoised object above:
+  // r3f 9.7 copies each entry of the `uniforms` prop into the material
+  // (`{ ...uniform }`), so mutating the originals never reaches the GPU and
+  // the whole system freezes at whatever `scene` held on mount.
   useFrame((_, delta) => {
+    const u = mat.current?.uniforms
+    if (!u) return
     const dt = Math.min(delta, 0.05)
-    const u = uniforms
     u.uTime.value += dt
     u.uFormA.value = scene.rows.formA
     u.uFormB.value = scene.rows.formB

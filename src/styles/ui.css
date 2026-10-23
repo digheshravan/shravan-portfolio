@@ -65,7 +65,7 @@ button,
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   font-family: var(--f-mono);
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--accent-ink);
@@ -220,7 +220,7 @@ button,
 .nav__brandText em {
   font-style: normal;
   font-family: var(--f-mono);
-  font-size: 0.58rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-3);
@@ -236,7 +236,7 @@ button,
   align-items: center;
   gap: 0.5em;
   font-family: var(--f-mono);
-  font-size: 0.68rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-3);
@@ -331,6 +331,12 @@ button,
   /* The link numbers sit outside the masked span, so clipping alone can't hide
      a closed menu — the shell itself has to be taken out of the page. */
   visibility: hidden;
+}
+
+/* The burger doubles as the menu's Close button, so while the menu is open
+   the bar has to sit above the overlay rather than under it. */
+html.menu-open .nav {
+  z-index: calc(var(--z-menu) + 1);
 }
 
 .menu__bg {
@@ -479,7 +485,7 @@ button,
   border: 1px solid var(--line-2);
   border-radius: 100px;
   font-family: var(--f-mono);
-  font-size: 0.66rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--fg-2);
@@ -495,7 +501,7 @@ button,
   padding: 0.3em 0.7em;
   border-radius: 100px;
   font-family: var(--f-mono);
-  font-size: 0.6rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -603,19 +609,6 @@ button,
   gap: 0.85rem;
 }
 
-.rail__pct,
-.rail__count {
-  font-size: 0.56rem;
-  letter-spacing: 0.12em;
-  color: var(--fg-4);
-  font-variant-numeric: tabular-nums;
-  transition: color 0.5s var(--e-out);
-}
-
-.rail:hover .rail__pct {
-  color: var(--fg-2);
-}
-
 .rail__list {
   display: flex;
   flex-direction: column;
@@ -633,7 +626,7 @@ button,
 
 .rail__label {
   font-family: var(--f-mono);
-  font-size: 0.58rem;
+  font-size: var(--t-micro);
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--fg-3);
@@ -642,7 +635,10 @@ button,
   transition: opacity 0.5s var(--e-out), transform 0.5s var(--e-out), color 0.4s var(--e-out);
 }
 
+/* Keyboard focus reveals the labels too — otherwise a tabbing user sees a
+   ring around a bare tick with no idea which section it goes to. */
 .rail:hover .rail__label,
+.rail:focus-within .rail__label,
 .rail__item.is-active .rail__label {
   opacity: 1;
   transform: translateX(0);
